@@ -1,13 +1,13 @@
-package edu.uw.cs403.plantmap.ui.notifications
+package edu.uw.cs403.plantmap.ui.settings
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class SettingsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "This is settings Fragment"
     }
     val text: LiveData<String> = _text
 }

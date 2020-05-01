@@ -1,4 +1,4 @@
-package edu.uw.cs403.plantmap.ui.home
+package edu.uw.cs403.plantmap.ui.map
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import edu.uw.cs403.plantmap.R
 
-class HomeFragment : Fragment() {
+class MapFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var mapViewModel: MapViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-        homeViewModel.text.observe(this, Observer {
+        mapViewModel =
+            ViewModelProviders.of(this).get(MapViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_map, container, false)
+        val textView: TextView = root.findViewById(R.id.text_map)
+        mapViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root
