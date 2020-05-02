@@ -4,7 +4,7 @@ version: 2.1
 # Use a package of configuration called an orb.
 jobs: # a collection of steps
   build:
-    working_directory: ~/backend
+    working_directory: ~/plantmap/backend
     environment:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
@@ -12,7 +12,8 @@ jobs: # a collection of steps
     docker: # run the steps with Docker
       - image: circleci/openjdk:11.0.3-jdk-stretch # ...with this image as the primary container; this is where all `steps` will run
     steps: # a collection of executable commands
-      - checkout # check out source code to working directory
+      - checkout: # check out source code to working directory
+          path: ~/plantmap
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
@@ -61,6 +62,6 @@ jobs: # a collection of steps
 
 # Orchestrate or schedule a set of jobs
 workflows:
-  plantmap:
+plantmap:
     jobs:
       - build
