@@ -4,9 +4,7 @@ version: 2.1
 # Use a package of configuration called an orb.
 jobs: # a collection of steps
   build:
-    working_directory: backend
-    # Remove if parallelism is not desired
-    parallelism: 2
+    working_directory: ~/backend
     environment:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
