@@ -9,6 +9,6 @@ public class GreeterTest {
     public void testGetGreeting() {
         Greeter greeter = new Greeter();
 
-        assertEquals("Hello, world!", greeter.getGreeting());
+        assertEquals("Oops, I failed.", greeter.getGreeting());
     }
 }
