@@ -83,11 +83,16 @@ jobs: # a collection of steps
       - run:
           name: Run Tests
           command: ./gradlew lint test
+      - run:
+          name: Assemble APK
+          command: ./gradlew assembleDebug
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: app/build/reports
           destination: reports
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: app/build/test-results
+      - store_artifacts:
+          path: app/build/outputs/apk/debug
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
 
 
