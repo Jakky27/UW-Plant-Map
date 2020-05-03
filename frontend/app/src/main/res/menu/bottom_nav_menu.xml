@@ -7,13 +7,12 @@
         android:title="@string/title_map" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/title_settings" />
-
-    <item
         android:id="@+id/navigation_feed"
         android:icon="@drawable/ic_feed_black_24dp"
         android:title="@string/title_feed" />
 
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/title_settings" />
 </menu>
