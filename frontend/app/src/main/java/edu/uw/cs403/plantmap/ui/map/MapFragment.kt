@@ -1,30 +1,32 @@
 package edu.uw.cs403.plantmap.ui.map
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.LatLngBounds
 import edu.uw.cs403.plantmap.R
 
+
 class MapFragment : Fragment(), OnMapReadyCallback {
+    private val UW_BOUNDS =
+        LatLngBounds(LatLng(47.647453, -122.314609), LatLng(47.662556, -122.298299))
+    private val UW_COORDS = LatLng(47.656021, -122.307156)
+    private val ZOOM = 15f
 
     private lateinit var mapViewModel: MapViewModel
 
-    private lateinit var textView: TextView
     private lateinit var searchView: SearchView
     private lateinit var mapView: MapView
 
@@ -39,21 +41,50 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ViewModelProviders.of(this).get(MapViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_map, container, false)
 
-        // TODO remove textView - likely unused
-        textView = root.findViewById(R.id.text_map)
-        mapViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
-
         // Initialize widgets
-        searchView = root.findViewById(R.id.searchView)
+        searchView = root.findViewById(R.id.mapSearch)
         mapView = root.findViewById(R.id.mapView)
 
 
         initSearchBarCallbacks()
-        initMap()
+        initMap(savedInstanceState)
 
         return root
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 
     private fun initSearchBarCallbacks() {
@@ -76,18 +107,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-    private fun initMap() {
-        //Bundle mapViewBundle = null
-        //mapView.onCreate(mapViewBundle)
+    private fun initMap(savedInstanceState: Bundle?) {
+        mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        UWMap = googleMap!! // TODO
+    override fun onMapReady(googleMap: GoogleMap) {
+        UWMap = googleMap
+        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
+        UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
+        UWMap.uiSettings.setMyLocationButtonEnabled(false)
 
-        // TODO temp - this is adding a marker
-        val marker = LatLng(-34.0, 151.0)
-        UWMap.addMarker(MarkerOptions().position(marker).title(("Test marker")))
-        UWMap.moveCamera(CameraUpdateFactory.newLatLng(marker))
+        if (ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
+            UWMap.setMyLocationEnabled(true)
+        }
+
+        //TODO: Load in plant submissions
     }
 }
