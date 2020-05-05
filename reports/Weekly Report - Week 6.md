@@ -60,8 +60,6 @@ ________________
 
 
 **Kouroche**
-* 
-* 
-* 
-* 
-*
+* Set up the Continuous Integration for the team, read CircleCI docs and created configuration file
+* Modified parts of "Testing" in the report to reflect our CI infrastructure 
+* Created dummy tests for CI, used as a template for making unit tests in the future
