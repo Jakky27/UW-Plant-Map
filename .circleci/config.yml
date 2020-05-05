@@ -99,6 +99,9 @@ jobs: # a collection of steps
 # Orchestrate or schedule a set of jobs
 workflows:
   plantmap:
+    branches:
+      ignore:
+        - reports
     jobs:
       - build_backend
       - build_frontend
