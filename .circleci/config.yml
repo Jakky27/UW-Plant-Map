@@ -105,8 +105,8 @@ workflows:
       - build_backend:
         filters:
           branches:
-            ignore: reports
+            ignore: /.*/
       - build_frontend:
         filters:
           branches:
-            ignore: reports
+            ignore: /.*/
