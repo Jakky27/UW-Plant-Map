@@ -44,11 +44,9 @@ ________________
 
 
 **Huan**
-* 
-* 
-* 
-* 
-* 
+* Made researches and comparison about different CI tools
+* Update the documents according to new requiements
+* Management trivias including setting up the reporsts repository, scheduling meetings etc.
 
 
 **Jacky**
