@@ -98,11 +98,15 @@ jobs: # a collection of steps
 
 # Orchestrate or schedule a set of jobs
 workflows:
+  version: 2
+
   plantmap:
     jobs:
       - build_backend:
-        branches:
-          ignore: reports
+          filters:
+            branches:
+              ignore: reports
       - build_frontend:
-        branches:
-          ignore: reports
+          filters:
+            branches:
+              ignore: reports
