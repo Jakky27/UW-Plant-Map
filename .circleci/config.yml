@@ -101,12 +101,8 @@ workflows:
   plantmap:
     jobs:
       - build_backend:
-        filters:
-          branches:
-            ignore:
-              -reports
+        branches:
+          ignore: reports
       - build_frontend:
-        filters:
-          branches:
-            ignore:
-              -reports
+        branches:
+          ignore: reports
