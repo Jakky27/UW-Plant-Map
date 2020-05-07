@@ -28,11 +28,8 @@ ________________
 
 ## Contributions of individual team members.
 **Brian**
-* 
-* 
-* 
-* 
-* 
+* Setup database
+* Helped update main doc based on feedback from previous weeks
 
 
 **Daniel**
@@ -48,11 +45,8 @@ ________________
 
 
 **Jacky**
-* 
-* 
-* 
-* 
-* 
+* Helped update main doc based on feedback from previous weeks
+* Started frontend coding
 
 
 **Kouroche**
