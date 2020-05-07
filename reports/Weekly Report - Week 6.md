@@ -28,8 +28,9 @@ ________________
 
 ## Contributions of individual team members.
 **Brian**
-* Setup database
-* Helped update main doc based on feedback from previous weeks
+* Azure database is set up, and I researched some methods for server coding between Kotlin and Java with Spark. 
+* Helped update main doc based on feedback from previous weeks.
+* I hope to have the basic server calls complete in time for the beta release this next week.
 
 
 **Daniel**
