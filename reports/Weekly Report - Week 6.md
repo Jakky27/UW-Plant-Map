@@ -36,11 +36,9 @@ ________________
 
 
 **Daniel**
-* 
-* 
-* 
-* 
-* 
+* Completed integration for Google Maps in our front-end
+* Helped research and write pros/cons for various CI tools
+* Helped update main doc based on feedback from previous weeks
 
 
 **Huan**
