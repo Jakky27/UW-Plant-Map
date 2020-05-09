@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class Plants {
+public class Plant {
     private UUID plant_id;
     private String name;
     private String description;
