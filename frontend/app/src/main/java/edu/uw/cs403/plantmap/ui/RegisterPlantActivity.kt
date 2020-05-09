@@ -7,10 +7,7 @@ import android.graphics.Bitmap
 import android.location.Location
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -27,6 +24,8 @@ class RegisterPlantActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var addImageButton: ImageButton
     private lateinit var registerButton: Button
+    private lateinit var cancelButton: Button
+    private lateinit var plantImageView: ImageView
     private lateinit var editText : EditText
 
     private lateinit var image : Bitmap
@@ -38,7 +37,9 @@ class RegisterPlantActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         addImageButton = findViewById(R.id.registerAddImage)
         registerButton = findViewById(R.id.registerButton)
+        cancelButton = findViewById(R.id.registerCancelButton)
         editText = findViewById(R.id.registerEditText)
+        plantImageView = findViewById(R.id.plantImageView)
 
         addImageButton.setOnClickListener { _ ->
             if (cameraEnabled()) {
@@ -67,6 +68,10 @@ class RegisterPlantActivity : AppCompatActivity() {
                     }
             }
         }
+
+        cancelButton.setOnClickListener { _ ->
+            finish()
+        }
     }
 
     private fun dispatchTakePictureIntent() {
@@ -80,7 +85,7 @@ class RegisterPlantActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data!!.extras!!.get("data") as Bitmap
-            addImageButton.setImageBitmap(imageBitmap)
+            plantImageView.setImageBitmap(imageBitmap)
             image = imageBitmap
         }
     }
