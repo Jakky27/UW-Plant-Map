@@ -1,6 +1,7 @@
 package edu.uw.cs403.plantmap.ui.map
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +17,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -29,6 +32,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var searchView: SearchView
     private lateinit var mapView: MapView
+    private lateinit var registerFAB : FloatingActionButton
 
     private lateinit var UWMap: GoogleMap
 
@@ -48,6 +52,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         initSearchBarCallbacks()
         initMap(savedInstanceState)
+
+        registerFAB = root.findViewById(R.id.registerPlantFAB)
+        registerFAB.setOnClickListener { _ ->
+            context!!.startActivity(Intent(context!!, RegisterPlantActivity::class.java))
+        }
 
         return root
     }
@@ -118,11 +127,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
         UWMap.uiSettings.setMyLocationButtonEnabled(false)
 
-        if (ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+        if (locationEnabled()) {
             UWMap.setMyLocationEnabled(true)
         }
 
         //TODO: Load in plant submissions
     }
+
+    private fun locationEnabled() =
+        (ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED)
 }
