@@ -44,7 +44,9 @@ class FeedFragment : Fragment() {
 }
 
 private fun updatePostsList() {
-    
+    // TODO communicate with server here
+
+    // TODO update flowers
 }
 
 private data class Post(val photo: String, val description: String, val date: Date)
