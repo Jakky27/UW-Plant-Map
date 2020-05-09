@@ -17,6 +17,15 @@ dependencies {
 
     // Spark Framework
     compile "com.sparkjava:spark-core:2.8.0"
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    //mssql
+    compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '7.1.4.jre8-preview'
 }
 
 task stage(dependsOn: ['build', 'clean'])
