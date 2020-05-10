@@ -12,5 +12,21 @@ repositories {
 }
 
 dependencies {
+    // JUnit
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // Spark Framework
+    compile "com.sparkjava:spark-core:2.8.0"
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'edu.uw.cs403.plantmap.backend.Application'
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
