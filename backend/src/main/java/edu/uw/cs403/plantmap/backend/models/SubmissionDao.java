@@ -10,7 +10,7 @@ import java.util.UUID;
 /*
 * SubmissionAccess accesses the submission data in database
 */
-public interface SubmissionAccess {
+public interface SubmissionDao {
     /*
      * CreateSubmission create a new post
      */

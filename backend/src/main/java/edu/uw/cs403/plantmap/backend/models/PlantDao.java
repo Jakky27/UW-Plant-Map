@@ -6,7 +6,7 @@ import java.util.UUID;
 /*
 * PlantAccess access the plant data in database
 * */
-public interface PlantAccess {
+public interface PlantDao {
 
     /*
     * registerPlant registers a new plant into the database, and return the plant_id if success
