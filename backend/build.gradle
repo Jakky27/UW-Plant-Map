@@ -19,14 +19,12 @@ dependencies {
     compile "com.sparkjava:spark-core:2.8.0"
 }
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'edu.uw.cs403.plantmap.backend.Application'
-        )
-    }
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
 
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from(configurations.compile)
 }
+
+stage.dependsOn(copyToLib)
