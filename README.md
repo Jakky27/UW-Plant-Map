@@ -10,4 +10,4 @@ These are instructions on how to deploy the backend server to Heroku from scratc
 
 - If you haven't already, create the Heroku app by running `heroku create <app-name>`.
 - Then run `git subtree push --prefix backend/ heroku master` from the root directory to deploy the project.
-- Once finished, the backend should be available from `https://<app-name>.herokuapps.com/`.
+- Once finished, the backend should be available from `https://<app-name>.herokuapp.com/`.
