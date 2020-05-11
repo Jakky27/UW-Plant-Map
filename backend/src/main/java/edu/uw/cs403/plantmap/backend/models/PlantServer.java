@@ -6,17 +6,17 @@ import java.util.UUID;
 /*
 * PlantAccess access the plant data in database
 * */
-public interface PlantAccess {
+public interface PlantServer {
 
     /*
-    * registerPlant registers a new plant into the database, and return the plant_id if success
+    * registerPlant registers a new plant into the database
     */
-    public UUID registerPlant(String name, String description) throws Exception;
+    public void registerPlant(String name, String description) throws Exception;
 
     /*
     * GetPlant searches for a plant
     */
-    public Plant getPlantById(UUID plant_id) throws Exception;
+    public Plant getPlantById(int plant_id) throws Exception;
 
     /*
      * GetPlant searches for a plant
@@ -29,12 +29,12 @@ public interface PlantAccess {
     * @param description more detailed information of the plant
     * @return the id of updated plant
     */
-    public UUID updatePlant(String name, String description) throws Exception;
+    public int updatePlant(int id, String name, String description) throws Exception;
 
     /*
     * deletePlant delete the record of given plant id
      */
-    public UUID deletePlant(UUID plant_id) throws Exception;
+    public int deletePlant(int plant_id) throws Exception;
 
     /*
     * GetAllPlants gets all plant from database

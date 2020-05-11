@@ -4,16 +4,15 @@ import lombok.Data;
 
 import java.sql.Blob;
 import java.sql.Date;
-import java.util.UUID;
 import com.microsoft.sqlserver.jdbc.Geography;
 
 @Data
 public class Submission {
 
-    private UUID post_id;
+    private int post_id;
     private String postedBy;
     private Date post_date;
-    private Plant plant;
+    private int plant_id;
     private Blob image;
     private Geography geoLocation; //Not sure about the data type
 
