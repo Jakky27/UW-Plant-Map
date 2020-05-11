@@ -1,7 +1,12 @@
 package edu.uw.cs403.plantmap.backend;
 
+import edu.uw.cs403.plantmap.backend.controllers.AddPlantController;
+import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
+import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import static spark.Spark.*;
 
 public class Main {
 
@@ -29,12 +34,13 @@ public class Main {
 
     public static void main(String[] args){
 
-        // start database connection
-        Connection conn = startDbConnect();
+        // start database connection, comment
+        Connection conn = startDbConnect(); // comment me for testing
 
         // TODO: add controllers
+        post("/v1/plant", new AddPlantController(new PlantServerImp(conn))); // comment me for testing
+//        post("/v1/plant", new AddPlantController(new PlantServerTest())); // for testing without DB
 
-        // TODO: listen to the front end
 
     }
 }

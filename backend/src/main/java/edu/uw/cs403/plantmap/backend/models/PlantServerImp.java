@@ -8,6 +8,10 @@ public class PlantServerImp implements PlantServer {
 
     private Connection conn;
 
+    public PlantServerImp(Connection conn) {
+        this.conn = conn;
+    }
+
     // SQL statements
     private static String insertStatement = "INSERT INTO plant (name, description) VALUES (?, ?);";
     private static String readIdStatement = "SELECT * FROM plant WHERE plant_id = ?;";

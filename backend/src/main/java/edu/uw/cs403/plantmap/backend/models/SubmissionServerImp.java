@@ -10,6 +10,10 @@ public class SubmissionServerImp implements SubmissionServer {
 
     private Connection conn;
 
+    public SubmissionServerImp(Connection conn) {
+        this.conn = conn;
+    }
+
     // SQL statements
     private static String insertStatement = "INSERT INTO submission (postedBy, post_date, plant_id, image, geoLocation) VALUES (?, ?, ?, ?, ?);";
     private static String readStatement = "SELECT * FROM submission WHERE post_id = ?;";
