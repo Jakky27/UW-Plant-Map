@@ -2,6 +2,7 @@ package edu.uw.cs403.plantmap.backend;
 
 import edu.uw.cs403.plantmap.backend.controllers.PlantController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
+import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,18 +18,19 @@ public class Application {
 
         try {
             // start database connection, comment
-            Connection conn = startDbConnect(); // comment me for testing
+//            Connection conn = startDbConnect(); // comment me for testing
 
             // TODO: add controllers
-            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
+//            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
-            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
-            get("/v1/plant", (req, res) -> plantCtr.getPlant(req, res));
+//            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
+//            get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
 
 
             // Test without DB
-//        PlantController plantCtrTest = new PlantController(new PlantServerTest());
-//        post("/v1/plant", (req, res) -> plantCtrTest.addPlant(req, res));
+            PlantController plantCtrTest = new PlantController(new PlantServerTest());
+            post("/v1/plant", (req, res) -> plantCtrTest.addPlant(req, res));
+            get("/v1/plant/:id", (req, res) -> plantCtrTest.getPlant(req, res));
 
 
         } catch (Exception e){

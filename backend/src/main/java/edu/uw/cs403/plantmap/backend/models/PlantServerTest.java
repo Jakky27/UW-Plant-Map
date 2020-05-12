@@ -1,11 +1,13 @@
 package edu.uw.cs403.plantmap.backend.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PlantServerTest implements PlantServer{
 
     private List<Plant> store = new ArrayList<>();
+    private HashMap<String, Plant> map = new HashMap<>();
 
     @Override
     public void registerPlant(String name, String description) throws Exception {
@@ -15,6 +17,7 @@ public class PlantServerTest implements PlantServer{
         p.setName(name);
         p.setDescription(description);
         store.add(p);
+        map.put(name, p);
         String output = String.format("register success!\n Plant name %s \n Description: %s\n", name, description);
         System.out.println(output);
     }
@@ -27,21 +30,38 @@ public class PlantServerTest implements PlantServer{
 
     @Override
     public Plant getPlantByName(String name) throws Exception {
-        return null;
+        if (!map.containsKey(name)){
+            return null;
+        } else{
+            return map.get(name);
+        }
     }
 
     @Override
     public int updatePlant(int id, String name, String description) throws Exception {
-        return 0;
+        if (id-1 >= store.size()) {
+            return 0;
+        }
+        map.remove(name);
+        Plant p = store.get(id - 1);
+        p.setName(name);
+        p.setDescription(description);
+        map.put(name, p);
+        return id;
     }
 
     @Override
     public int deletePlant(int plant_id) throws Exception {
-        return 0;
+        if (plant_id-1 >= store.size()) {
+            return 0;
+        }else{
+            store.remove(plant_id -1 );
+            return plant_id;
+        }
     }
 
     @Override
     public List<Plant> getAllPlants() throws Exception {
-        return null;
+        return store;
     }
 }
