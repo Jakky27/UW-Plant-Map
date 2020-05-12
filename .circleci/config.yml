@@ -70,9 +70,6 @@ jobs: # a collection of steps
           path: ~/plantmap
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#      - run:
-#         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
-#         command: sudo chmod +x ./gradlew
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
@@ -94,7 +91,20 @@ jobs: # a collection of steps
       - store_artifacts:
           path: app/build/outputs/apk/debug
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
-
+  deploy_to_heroku:
+    machine:
+        enabled: true
+    working_directory: ~/plantmap
+    environment:
+      HEROKU_APP: "plantmap" # define env var $HEROKU_APP
+    steps:
+      - checkout
+      - run:
+          name: Setup Heroku API
+          command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
+      - run:
+          name: Deploy to Heroku
+          command: git subtree push --prefix backend/ heroku master
 
 # Orchestrate or schedule a set of jobs
 workflows:
@@ -105,8 +115,15 @@ workflows:
       - build_backend:
           filters:
             branches:
-              ignore: reports
+              only: master
       - build_frontend:
           filters:
             branches:
-              ignore: reports
+              only: master
+      - deploy_to_heroku:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build_backend
+            - build_frontend
