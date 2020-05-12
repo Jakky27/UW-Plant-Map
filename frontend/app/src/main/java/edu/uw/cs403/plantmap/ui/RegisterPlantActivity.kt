@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.UWPlantMapApplication
 
 class RegisterPlantActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -26,7 +27,8 @@ class RegisterPlantActivity : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var cancelButton: Button
     private lateinit var plantImageView: ImageView
-    private lateinit var editText : EditText
+    private lateinit var descriptionEditText: EditText
+    private lateinit var nameEditText: EditText
 
     private lateinit var image : Bitmap
 
@@ -38,7 +40,8 @@ class RegisterPlantActivity : AppCompatActivity() {
         addImageButton = findViewById(R.id.registerAddImage)
         registerButton = findViewById(R.id.registerButton)
         cancelButton = findViewById(R.id.registerCancelButton)
-        editText = findViewById(R.id.registerEditText)
+        descriptionEditText = findViewById(R.id.registerDescriptionEditText)
+        nameEditText = findViewById(R.id.registerPlantNameEditText)
         plantImageView = findViewById(R.id.plantImageView)
 
         addImageButton.setOnClickListener { _ ->
@@ -55,14 +58,14 @@ class RegisterPlantActivity : AppCompatActivity() {
             } else if (!locationEnabled()) {
                 Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
             } else {
-                val text = editText.text;
+                val description = descriptionEditText.text.toString();
+                val name = nameEditText.text.toString()
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location : Location? ->
                         if (location == null) {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
-                            // TODO: send location, text, image to controller to be registered
-                            
+                            // TODO: send image to controller to be registered
                             finish()
                         }
                     }
