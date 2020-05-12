@@ -26,6 +26,7 @@ public class Application {
             get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
             delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
             put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
+            get("/v1/plant", plantCtr::getAllPlant);
 
             // Test without DB
 //            PlantController plantCtrTest = new PlantController(new PlantServerTest());

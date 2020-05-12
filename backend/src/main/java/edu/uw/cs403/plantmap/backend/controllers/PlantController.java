@@ -43,10 +43,10 @@ public class PlantController {
         return jo;
     }
 
-    //TODO: get all plants
-    public List<JSONObject> getAllPlant(Request request, Response response) throws Exception{
+    public Object getAllPlant(Request request, Response response) throws Exception{
         List<Plant> list = server.getAllPlants();
-        return null;
+        JSONArray ja = new JSONArray(list);
+        return ja;
     }
 
     public int updatePlant(Request request, Response response) throws Exception{

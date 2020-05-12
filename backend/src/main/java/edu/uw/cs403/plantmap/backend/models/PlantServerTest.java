@@ -62,6 +62,7 @@ public class PlantServerTest implements PlantServer{
 
     @Override
     public List<Plant> getAllPlants() throws Exception {
+
         return store;
     }
 }
