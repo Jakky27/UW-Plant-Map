@@ -10,10 +10,10 @@ import com.microsoft.sqlserver.jdbc.Geography;
 public class Submission {
 
     private int post_id;
-    private String postedBy;
+    private String posted_by;
     private Date post_date;
     private int plant_id;
-    private Blob image; // Need further check
+    private byte[] img; // Need further check
     private float longitude;
     private float latitude;
 
