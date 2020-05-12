@@ -1,6 +1,6 @@
 package edu.uw.cs403.plantmap.backend;
 
-import edu.uw.cs403.plantmap.backend.controllers.AddPlantController;
+import edu.uw.cs403.plantmap.backend.controllers.PlantController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
 import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
 
@@ -34,13 +34,25 @@ public class Main {
 
     public static void main(String[] args){
 
-        // start database connection, comment
-        Connection conn = startDbConnect(); // comment me for testing
+        try {
+            // start database connection, comment
+            Connection conn = startDbConnect(); // comment me for testing
 
-        // TODO: add controllers
-        post("/v1/plant", new AddPlantController(new PlantServerImp(conn))); // comment me for testing
-//        post("/v1/plant", new AddPlantController(new PlantServerTest())); // for testing without DB
+            // TODO: add controllers
+            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
+            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
+            get("/v1/plant", (req, res) -> plantCtr.getPlant(req, res));
+
+
+            // Test without DB
+//        PlantController plantCtrTest = new PlantController(new PlantServerTest());
+//        post("/v1/plant", (req, res) -> plantCtrTest.addPlant(req, res));
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 }
