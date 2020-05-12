@@ -15,16 +15,16 @@ public class SubmissionServerImp implements SubmissionServer {
     }
 
     // SQL statements
-    private static String insertStatement = "INSERT INTO submission (postedBy, post_date, plant_id, image, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
+    private static String insertStatement = "INSERT INTO submission (posted_by, post_date, plant_id, image, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
     private static String readStatement = "SELECT * FROM submission WHERE post_id = ?;";
     private static String deleteStatement = "DELETE FROM submission WHERE post_id = ?";
     private static String getAllStatement = "SELECT * FROM submission";
 
     @Override
-    public void createSubmission(String postedBy, Date post_date, int plant_id, Blob image, float longitude, float latitude) throws Exception {
+    public void createSubmission(String posted_by, Date post_date, int plant_id, byte[] image, float longitude, float latitude) throws Exception {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
-            preparedStatement.setString(1,postedBy);
+            preparedStatement.setString(1,posted_by);
             preparedStatement.setDate(2,post_date);
             preparedStatement.setInt(3,plant_id);
             preparedStatement.setFloat(4, longitude);
