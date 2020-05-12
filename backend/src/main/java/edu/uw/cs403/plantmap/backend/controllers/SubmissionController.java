@@ -12,26 +12,30 @@ public class SubmissionController {
 
     private SubmissionServer server;
 
-    // filed name for Submission class
-    private static String attrID = "post_id";
+    public SubmissionController(SubmissionServer server) {
+        this.server = server;
+    }
+
+    // JSON keys for Submission class
+    private static String attrID = "sub_id";
     private static String attrPostby = "posted_by";
-    private static String attrDate = "post_date";
+    private static String attrDate = "posted_on";
+    private static String attrPlantID = "plant_id";
     private static String attrImg = "img";
-    private static String attLon = "longitude";
+    private static String attrLon = "longitude";
     private static String attrLat = "latitude";
 
-    public int createPost(Request request, Response response) {
+    public Object createPost(Request request, Response response) throws Exception{
+        response.type("text/html");
         if (request.contentType().equals("application/json")) {
             JSONObject bodyJson = new JSONObject(request.body());
             Date date = new Date(bodyJson.getLong(attrDate));
-            server.createSubmission(bodyJson.getString(attrPostby), date);
-            Plant newPlant = server.getPlantByName(bodyJson.getString(attrName));
-            return newPlant.getPlant_id();
+            server.createSubmission(bodyJson.getString(attrPostby), date, bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
+            return "Successfully posted!";
         } else {
             // response a http error
-            response.type("text/html");
             response.status(415);
-            return 0;
+            return "Post failed";
         }
     }
 
