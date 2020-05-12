@@ -1,12 +1,15 @@
 package edu.uw.cs403.plantmap.backend.controllers;
 
 import edu.uw.cs403.plantmap.backend.models.Plant;
+import edu.uw.cs403.plantmap.backend.models.Submission;
 import edu.uw.cs403.plantmap.backend.models.SubmissionServer;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
 import java.sql.Date;
+import java.util.List;
 
 public class SubmissionController {
 
@@ -39,7 +42,7 @@ public class SubmissionController {
         }
     }
 
-    public Object getPost(Request request, Response response) {
+    public Object getPost(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         Submission s = server.getSubmission(pid);
 
@@ -47,13 +50,13 @@ public class SubmissionController {
         return new JSONObject(s);
     }
 
-    public Object getAllPost(Request request, Response response) {
-        List<Plant> list = server.getAllSubmission();
+    public Object getAllPost(Request request, Response response) throws Exception {
+        List<Submission> list = server.getAllSubmission();
         JSONArray ja = new JSONArray(list);
         return ja;
     }
 
-    public Object deletePost(Request request, Response response) {
+    public Object deletePost(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         return server.deleteSubmission(pid);
     }
