@@ -3,4 +3,7 @@
     <string name="title_map">Map</string>
     <string name="title_feed">Feed</string>
     <string name="title_settings">Settings</string>
+    <string name="register_plant">Register Plant</string>
+    <string name="register_default_text">Enter facts about plant here (optional)</string>
+    <string name="cancel_text">Cancel</string>
 </resources>
