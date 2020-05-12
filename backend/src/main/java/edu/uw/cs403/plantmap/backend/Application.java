@@ -4,6 +4,8 @@ import edu.uw.cs403.plantmap.backend.controllers.PlantController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
 import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -15,30 +17,35 @@ public class Application {
 
         get("/", (req, res) -> "UW PlantMap API server");
 
+        Connection conn = startDbConnect();
 
-        try {
-            Connection conn = startDbConnect();
+        // TODO: add submission controllers
+        PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
-            // TODO: add controllers
-            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
+        post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
+        get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
+        delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
+        put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
+        get("/v1/plant", plantCtr::getAllPlant);
 
-            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
-            get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
-            delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
-            put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
-            get("/v1/plant", plantCtr::getAllPlant);
+        // Test without DB
+//        PlantController plantCtrTest = new PlantController(new PlantServerTest());
+//        post("/v1/plant", plantCtrTest::addPlant);
+//        get("/v1/plant/:id", plantCtrTest::getPlant);
+//        get("/v1/plant", plantCtrTest::getAllPlant);
+//        delete("/v1/plant/:id", plantCtrTest::deletePlant);
 
-            // Test without DB
-//            PlantController plantCtrTest = new PlantController(new PlantServerTest());
-//            post("/v1/plant", plantCtrTest::addPlant);
-//            get("/v1/plant/:id", plantCtrTest::getPlant);
-//            get("/v1/plant", plantCtrTest::getAllPlant);
-//            delete("/v1/plant/:id", plantCtrTest::deletePlant);
+        exception(Exception.class, (exception, request, response) -> {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            pw.println("500 - Internal Error");
+            pw.println();
+            exception.printStackTrace(pw);
 
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+            response.status(500);
+            response.type("text/plain");
+            response.body(sw.toString());
+        });
     }
 
     static int getHerokuAssignedPort() {
