@@ -12,24 +12,17 @@ public class Application {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
-        get("/", (req, res) -> "Welcome to the UW PlantMap API server.");
+        get("/", (req, res) -> "UW PlantMap API server");
 
 
         try {
-            // start database connection, comment
-            Connection conn = startDbConnect(); // comment me for testing
+            Connection conn = startDbConnect();
 
             // TODO: add controllers
             PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
-            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
-            get("/v1/plant", (req, res) -> plantCtr.getPlant(req, res));
-
-
-            // Test without DB
-//        PlantController plantCtrTest = new PlantController(new PlantServerTest());
-//        post("/v1/plant", (req, res) -> plantCtrTest.addPlant(req, res));
-
+            post("/v1/plant", plantCtr::addPlant);
+            get("/v1/plant", plantCtr::getPlant);
 
         } catch (Exception e){
             e.printStackTrace();
@@ -46,11 +39,10 @@ public class Application {
     }
 
     public static Connection startDbConnect() {
-        // TODO: Add Azure DB information
-        String hostName = "your_server.database.windows.net"; // update me
-        String dbName = "your_database"; // update me
-        String user = "your_username"; // update me
-        String password = "your_password"; // update me
+        String hostName = System.getenv("DB_HOST");
+        String dbName = System.getenv("DB_NAME");
+        String user = System.getenv("DB_USER");
+        String password = System.getenv("DB_PASSWORD");
         String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;"
                 + "hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
         Connection connection = null;
