@@ -14,7 +14,7 @@ public interface SubmissionServer {
     /*
      * CreateSubmission create a new post
      */
-    public void createSubmission(String postedBy, Date post_date, int plant_id, Blob image, float longitude, float latitude) throws Exception;
+    public void createSubmission(String posted_by, Date post_date, int plant_id, byte[] image, float longitude, float latitude) throws Exception;
 
     /*
      * DeleteSubmission deletes a post
