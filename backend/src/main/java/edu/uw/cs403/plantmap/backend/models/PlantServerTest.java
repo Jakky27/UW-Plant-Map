@@ -1,21 +1,28 @@
 package edu.uw.cs403.plantmap.backend.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlantServerTest implements PlantServer{
+
+    private List<Plant> store = new ArrayList<>();
+
     @Override
     public void registerPlant(String name, String description) throws Exception {
+        int id = store.size()+1;
+        Plant p = new Plant();
+        p.setPlant_id(id);
+        p.setName(name);
+        p.setDescription(description);
+        store.add(p);
         String output = String.format("register success!\n Plant name %s \n Description: %s\n", name, description);
         System.out.println(output);
     }
 
     @Override
     public Plant getPlantById(int plant_id) throws Exception {
-        Plant plant = new Plant();
-        plant.setName("test");
-        plant.setName("test description");
-        plant.setPlant_id(9999);
-        return plant;
+        if (store.size() <= plant_id - 1) return null;
+        return store.get(plant_id-1);
     }
 
     @Override

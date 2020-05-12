@@ -15,19 +15,20 @@ public class SubmissionServerImp implements SubmissionServer {
     }
 
     // SQL statements
-    private static String insertStatement = "INSERT INTO submission (postedBy, post_date, plant_id, image, geoLocation) VALUES (?, ?, ?, ?, ?);";
+    private static String insertStatement = "INSERT INTO submission (postedBy, post_date, plant_id, image, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
     private static String readStatement = "SELECT * FROM submission WHERE post_id = ?;";
     private static String deleteStatement = "DELETE FROM submission WHERE post_id = ?";
     private static String getAllStatement = "SELECT * FROM submission";
 
     @Override
-    public void createSubmission(String postedBy, Date post_date, int plant_id, Blob image, Geography geoLocation) throws Exception {
+    public void createSubmission(String postedBy, Date post_date, int plant_id, Blob image, float longitude, float latitude) throws Exception {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
             preparedStatement.setString(1,postedBy);
             preparedStatement.setDate(2,post_date);
             preparedStatement.setInt(3,plant_id);
-            preparedStatement.setBytes(4,geoLocation.serialize());
+            preparedStatement.setFloat(4, longitude);
+            preparedStatement.setFloat(5,latitude);
             preparedStatement.executeUpdate();
         } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
@@ -65,7 +66,8 @@ public class SubmissionServerImp implements SubmissionServer {
             sub.setPostedBy(results.getString(2));
             sub.setPost_date(results.getDate(3));
             sub.setImage(results.getBlob(4));
-            sub.setGeoLocation(Geography.deserialize(results.getBytes(5)));
+            sub.setLongitude(results.getFloat(5));
+            sub.setLatitude(results.getFloat(6));
 
             return sub;
 
@@ -90,7 +92,8 @@ public class SubmissionServerImp implements SubmissionServer {
                 sub.setPostedBy(results.getString(2));
                 sub.setPost_date(results.getDate(3));
                 sub.setImage(results.getBlob(4));
-                sub.setGeoLocation(Geography.deserialize(results.getBytes(5)));
+                sub.setLongitude(results.getFloat(5));
+                sub.setLatitude(results.getFloat(6));
                 postList.add(sub);
             }
 

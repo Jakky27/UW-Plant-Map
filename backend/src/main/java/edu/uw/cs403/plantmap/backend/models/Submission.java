@@ -13,8 +13,9 @@ public class Submission {
     private String postedBy;
     private Date post_date;
     private int plant_id;
-    private Blob image;
-    private Geography geoLocation; //Not sure about the data type
+    private Blob image; // Need further check
+    private float longitude;
+    private float latitude;
 
 }
 
