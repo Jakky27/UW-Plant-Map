@@ -34,6 +34,7 @@ public class Application {
 //        get("/v1/plant/:id", plantCtrTest::getPlant);
 //        get("/v1/plant", plantCtrTest::getAllPlant);
 //        delete("/v1/plant/:id", plantCtrTest::deletePlant);
+//        put("/v1/plant/:id", plantCtrTest::updatePlant);
 
         exception(Exception.class, (exception, request, response) -> {
             StringWriter sw = new StringWriter();
