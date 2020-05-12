@@ -8,6 +8,6 @@ UW Plant Map is developed for the University of Washington's CS 403 class. It is
 
 These are instructions on how to deploy the backend server to Heroku from scratch.
 
-- If you haven't already, create the Heroku app by running `heroku create <app-name>`.
+- If you haven't already, create the Heroku app by running `heroku create <app-name>`. If you've already created the app, use `heroku git:remote -a <app-name>` instead.
 - Then run `git subtree push --prefix backend/ heroku master` from the root directory to deploy the project.
 - Once finished, the backend should be available from `https://<app-name>.herokuapp.com/`.
