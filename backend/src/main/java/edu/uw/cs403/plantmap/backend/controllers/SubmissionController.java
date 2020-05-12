@@ -40,15 +40,22 @@ public class SubmissionController {
     }
 
     public Object getPost(Request request, Response response) {
-        return 0;
+        int pid = Integer.parseInt(request.params(":id"));
+        Submission s = server.getSubmission(pid);
+
+        response.type("application/json");
+        return new JSONObject(s);
     }
 
     public Object getAllPost(Request request, Response response) {
-        return 0;
+        List<Plant> list = server.getAllSubmission();
+        JSONArray ja = new JSONArray(list);
+        return ja;
     }
 
     public Object deletePost(Request request, Response response) {
-        return 0;
+        int pid = Integer.parseInt(request.params(":id"));
+        return server.deleteSubmission(pid);
     }
 
 }
