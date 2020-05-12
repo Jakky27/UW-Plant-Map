@@ -18,20 +18,22 @@ public class Application {
 
         try {
             // start database connection, comment
-//            Connection conn = startDbConnect(); // comment me for testing
+            Connection conn = startDbConnect(); // comment me for testing
 
             // TODO: add controllers
-//            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
+            PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
-//            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
-//            get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
-
+            post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
+            get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
+            delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
+            put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
 
             // Test without DB
-            PlantController plantCtrTest = new PlantController(new PlantServerTest());
-            post("/v1/plant", (req, res) -> plantCtrTest.addPlant(req, res));
-            get("/v1/plant/:id", (req, res) -> plantCtrTest.getPlant(req, res));
-
+//            PlantController plantCtrTest = new PlantController(new PlantServerTest());
+//            post("/v1/plant", plantCtrTest::addPlant);
+//            get("/v1/plant/:id", plantCtrTest::getPlant);
+//            get("/v1/plant", plantCtrTest::getAllPlant);
+//            delete("/v1/plant/:id", plantCtrTest::deletePlant);
 
         } catch (Exception e){
             e.printStackTrace();

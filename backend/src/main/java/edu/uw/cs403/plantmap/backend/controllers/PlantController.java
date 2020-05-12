@@ -45,12 +45,20 @@ public class PlantController {
 
     //TODO: get all plants
     public List<JSONObject> getAllPlant(Request request, Response response) throws Exception{
+        List<Plant> list = server.getAllPlants();
         return null;
     }
 
-    //TODO: update plant
+    public int updatePlant(Request request, Response response) throws Exception{
+        int pid = Integer.parseInt(request.params(":id"));
+        JSONObject bodyJson = new JSONObject(request.body());
+        return server.updatePlant(pid, bodyJson.getString(attrName), bodyJson.getString(attrDescription));
+    }
 
-    //TODO: delete plant
+    public int deletePlant(Request request, Response response) throws Exception{
+        int pid = Integer.parseInt(request.params(":id"));
+        return server.deletePlant(pid);
+    }
 
 
 
