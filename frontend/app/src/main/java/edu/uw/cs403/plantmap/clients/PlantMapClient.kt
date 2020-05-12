@@ -1,21 +1,21 @@
 package edu.uw.cs403.plantmap.clients
 
+import edu.uw.cs403.plantmap.models.Plant
+import edu.uw.cs403.plantmap.models.Submission
+
 interface PlantMapClient {
+    fun getSubmissions(): List<Submission>
 
-    // At the moment, most of these don't have the correct return type
-
-    fun getSubmissions()
-
-    fun getPlant(plantId: Int)
+    fun getPlant(plantId: Int): Plant
 
     fun postPlant(name: String, description: String): Int
 
-    fun getSubmission(submissionId: Int)
+    fun getSubmission(submissionId: Int): Submission
 
     fun postSubmission(plantId: Int, latitude: Float, longitude: Float, postedOn: Long,
                        postedBy: String): Int
 
-    fun getImage(submissionId: Int)
+    fun getImage(submissionId: Int): ByteArray
 
     fun postImage(submissionId: Int)
 }
