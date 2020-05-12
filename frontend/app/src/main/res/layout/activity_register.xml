@@ -13,7 +13,7 @@
         android:backgroundTint="@color/colorPrimaryDark"
         android:text="@string/cancel_text"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@id/plantImageView"
+        app:layout_constraintBottom_toTopOf="@id/registerPlantNameEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
