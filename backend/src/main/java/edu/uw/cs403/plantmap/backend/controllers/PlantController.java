@@ -39,8 +39,9 @@ public class PlantController {
     public Object getPlant(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         Plant p = server.getPlantById(pid);
-        JSONObject jo = new JSONObject(p);
-        return jo;
+
+        response.type("application/json");
+        return new JSONObject(p);
     }
 
     public Object getAllPlant(Request request, Response response) throws Exception{
