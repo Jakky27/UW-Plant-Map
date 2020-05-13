@@ -57,9 +57,17 @@ class FeedFragment : Fragment() {
         return root
     }
 
-    private var TEMP_IMAGES_URL = arrayOf("https://i.imgur.com/NoXtk.jpg",
+    private var TEMP_IMAGES_URL = arrayOf(
+        "https://i.imgur.com/NoXtk.jpg",
         "https://i.imgur.com/QRn0O0E.jpg",
-        "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/close-up-of-flower-blooming-outdoors-royalty-free-image-739387273-1544039749.jpg"
+        "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/close-up-of-flower-blooming-outdoors-royalty-free-image-739387273-1544039749.jpg",
+        "https://i.imgur.com/s9f9abx.jpg",
+        "https://i.imgur.com/QfDGakI.jpg",
+        "https://i.imgur.com/R2l26fI.jpg",
+        "https://i.imgur.com/WbhUbh7.png",
+        "https://i.imgur.com/LvxYIvQb.jpg",
+        "https://i.imgur.com/knGlNmyb.jpg",
+        "https://i.imgur.com/H18lXnKb.jpg"
     )
 
     private fun updatePostsList() {
@@ -71,6 +79,8 @@ class FeedFragment : Fragment() {
         val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, url, null,
             Response.Listener { response ->
                 // TODO: Update flowers here
+
+                Log.d("DEBUG", response.length().toString())
 
                 for(x in 0 until response.length()) {
                     val res = response[x] as JSONObject
