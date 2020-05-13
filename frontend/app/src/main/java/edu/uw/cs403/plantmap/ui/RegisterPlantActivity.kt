@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
-import edu.uw.cs403.plantmap.UWPlantMapApplication
 
 class RegisterPlantActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
