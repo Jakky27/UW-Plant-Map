@@ -21,7 +21,7 @@ public class SubmissionServerImp implements SubmissionServer {
     private static String getAllStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
 
     @Override
-    public void createSubmission(String posted_by, Date post_date, int plant_id, float longitude, float latitude) throws Exception {
+    public int createSubmission(String posted_by, Date post_date, int plant_id, float longitude, float latitude) throws Exception {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
             preparedStatement.setString(1,posted_by);

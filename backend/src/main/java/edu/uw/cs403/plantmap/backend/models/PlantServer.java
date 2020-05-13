@@ -12,7 +12,7 @@ public interface PlantServer {
     /*
     * registerPlant registers a new plant into the database
     */
-    public void registerPlant(String name, String description) throws Exception;
+    public int registerPlant(String name, String description) throws Exception;
 
     /*
     * GetPlant searches for a plant
