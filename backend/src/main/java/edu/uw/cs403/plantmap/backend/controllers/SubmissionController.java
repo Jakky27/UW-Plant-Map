@@ -52,8 +52,9 @@ public class SubmissionController {
 
     public Object getAllPost(Request request, Response response) throws Exception {
         List<Submission> list = server.getAllSubmission();
-        JSONArray ja = new JSONArray(list);
-        return ja;
+
+        response.type("application/json");
+        return new JSONArray(list);
     }
 
     public Object deletePost(Request request, Response response) throws Exception {

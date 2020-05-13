@@ -16,9 +16,9 @@ public class SubmissionServerImp implements SubmissionServer {
 
     // SQL statements
     private static String insertStatement = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
-    private static String readStatement = "SELECT (posted_by, post_date, plant_id, longitude, latitude) FROM submission WHERE post_id = ?;";
+    private static String readStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
     private static String deleteStatement = "DELETE FROM submission WHERE post_id = ?";
-    private static String getAllStatement = "SELECT (posted_by, post_date, plant_id, longitude, latitude, post_id) FROM submission";
+    private static String getAllStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
 
     @Override
     public void createSubmission(String posted_by, Date post_date, int plant_id, float longitude, float latitude) throws Exception {
