@@ -6,7 +6,6 @@ import spark.Request;
 import spark.Response;
 import org.json.*;
 
-import java.text.Format;
 import java.util.List;
 
 public class PlantController {

@@ -1,8 +1,6 @@
 package edu.uw.cs403.plantmap.backend.models;
 
-import java.sql.Connection;
 import java.util.List;
-import java.util.UUID;
 
 /*
 * PlantAccess access the plant data in database
