@@ -9,18 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
-import edu.uw.cs403.plantmap.UWPlantMapApplication
+import edu.uw.cs403.plantmap.RequestQueueSingleton
 import edu.uw.cs403.plantmap.models.Submission
 import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
 
@@ -126,22 +129,30 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         UWMap = googleMap
-        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
-        UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
+//        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
+//        UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
         UWMap.uiSettings.isMyLocationButtonEnabled = false
 
         if (locationEnabled()) {
             UWMap.isMyLocationEnabled = true
         }
 
-        val submissions: List<Submission> =
-            (this.activity!!.application as UWPlantMapApplication).appClient.getSubmissions()
+        val submissionsGetRequest =
+            StringRequest(
+                Request.Method.GET, "https://plantmap.herokuapp.com/v1/submission",
+                Response.Listener { response ->
+                    val submissions: List<Submission> = ObjectMapper().readValue(response)
+                    for (submission in submissions) {
+                        val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
+                        val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
+                        UWMap.addMarker(MarkerOptions().position(latLng).title(title))
+                    }
+                },
+                Response.ErrorListener { error ->
+                    // TODO: something
+                })
 
-        for (submission in submissions) {
-            val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
-            val title = "Submission posted by " + submission.postedBy + " on " + submission.postedOn
-            UWMap.addMarker(MarkerOptions().position(latLng).title(title))
-        }
+        RequestQueueSingleton.getInstance(this.activity!!.applicationContext).addToRequestQueue(submissionsGetRequest)
     }
 
     private fun locationEnabled() =

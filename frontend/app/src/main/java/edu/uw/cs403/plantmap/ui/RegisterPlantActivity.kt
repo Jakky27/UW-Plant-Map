@@ -10,10 +10,14 @@ import android.provider.MediaStore
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
-import edu.uw.cs403.plantmap.UWPlantMapApplication
+import edu.uw.cs403.plantmap.RequestQueueSingleton
+import org.json.JSONObject
 
 class RegisterPlantActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -66,14 +70,38 @@ class RegisterPlantActivity : AppCompatActivity() {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
                             // TODO: send image to controller to be registered
-                            val client =
-                                (this.application as UWPlantMapApplication).appClient
+                            val baseURL = "https://plantmap.herokuapp.com/v1/"
+                            val entity1 = HashMap<Any?, Any?>()
+                            entity1["name"] = name
+                            entity1["description"] = description
+                            val plantPostRequest =
+                                JsonObjectRequest(Request.Method.POST, baseURL + "plant", JSONObject(entity1),
+                                Response.Listener { response ->
+                                    val plantId = response.get("plant_id")
 
-                            val plantId = client.registerPlant(name, description)
-                            client.postSubmission(plantId, location.latitude.toFloat(),
-                                location.longitude.toFloat(), System.currentTimeMillis(), "TestUser")
+                                    val entity2 = HashMap<Any?, Any?>()
+                                    entity2["plant_id"] = plantId
+                                    entity2["latitude"] = location.latitude.toFloat()
+                                    entity2["longitude"] = location.longitude.toFloat()
+                                    entity2["posted_on"] = System.currentTimeMillis()
+                                    entity2["posted_by"] = "Test User"
 
-                            finish()
+                                    val submissionPostRequest =
+                                        JsonObjectRequest(Request.Method.POST, baseURL + "submission", JSONObject(entity2),
+                                            Response.Listener { _ ->
+                                                finish()
+                                            },
+                                            Response.ErrorListener { error ->
+                                                // TODO: something
+                                            })
+
+                                    RequestQueueSingleton.getInstance(this).addToRequestQueue(submissionPostRequest)
+                                },
+                                Response.ErrorListener { error ->
+                                    // TODO: something
+                                })
+                            RequestQueueSingleton.getInstance(this).addToRequestQueue(plantPostRequest)
+
                         }
                     }
             }

@@ -1,10 +1,10 @@
 package edu.uw.cs403.plantmap.models
 
 class Submission {
-    val subId: Int? = null
-    val plantId: Int? = null
+    val post_id: Int? = null
+    val plant_id: Int? = null
     val latitude: Float? = null
     val longitude: Float? = null
-    val postedOn: Long? = null
-    val postedBy: String? = null
+    val post_date: Long? = null
+    val posted_by: String? = null
 }
