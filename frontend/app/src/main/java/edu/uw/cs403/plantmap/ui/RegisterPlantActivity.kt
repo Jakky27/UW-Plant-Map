@@ -10,9 +10,11 @@ import android.provider.MediaStore
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.android.volley.Request
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
@@ -74,32 +76,49 @@ class RegisterPlantActivity : AppCompatActivity() {
                             val entity1 = HashMap<Any?, Any?>()
                             entity1["name"] = name
                             entity1["description"] = description
-                            val plantPostRequest =
-                                JsonObjectRequest(Request.Method.POST, baseURL + "plant", JSONObject(entity1),
+                            val plantPostRequest = object:
+                                JsonObjectRequest(Method.POST, baseURL + "plant", JSONObject(entity1),
                                 Response.Listener { response ->
-                                    val plantId = response.get("plant_id")
+                                    val plantId: Int = ObjectMapper().readValue<ObjectNode>(response.toString()).get("plant_id").asInt()
 
                                     val entity2 = HashMap<Any?, Any?>()
                                     entity2["plant_id"] = plantId
                                     entity2["latitude"] = location.latitude.toFloat()
                                     entity2["longitude"] = location.longitude.toFloat()
-                                    entity2["posted_on"] = System.currentTimeMillis()
+                                    entity2["post_date"] = System.currentTimeMillis()
                                     entity2["posted_by"] = "Test User"
 
-                                    val submissionPostRequest =
-                                        JsonObjectRequest(Request.Method.POST, baseURL + "submission", JSONObject(entity2),
+                                    val submissionPostRequest = object:
+                                        JsonObjectRequest(Method.POST, baseURL + "submission", JSONObject(entity2),
                                             Response.Listener { _ ->
-                                                finish()
+                                                // TODO: something
                                             },
                                             Response.ErrorListener { error ->
                                                 // TODO: something
                                             })
+                                        {
+                                            override fun getHeaders(): MutableMap<String, String>{
+                                                val headers = HashMap<String, String>()
+                                                headers["Content-Type"] = "application/json"
+                                                return headers
+                                            }
+                                        }
 
                                     RequestQueueSingleton.getInstance(this).addToRequestQueue(submissionPostRequest)
                                 },
                                 Response.ErrorListener { error ->
-                                    // TODO: something
+                                    // TODO: handle
                                 })
+                            {
+                                override fun getHeaders(): MutableMap<String, String>{
+                                    val headers = HashMap<String, String>()
+                                    headers["Content-Type"] = "application/json"
+                                    return headers
+                                }
+                            }
+
+                            finish()
+
                             RequestQueueSingleton.getInstance(this).addToRequestQueue(plantPostRequest)
 
                         }
