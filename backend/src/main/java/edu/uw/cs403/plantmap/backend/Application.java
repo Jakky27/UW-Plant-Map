@@ -1,8 +1,10 @@
 package edu.uw.cs403.plantmap.backend;
 
 import edu.uw.cs403.plantmap.backend.controllers.PlantController;
+import edu.uw.cs403.plantmap.backend.controllers.SubmissionController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
 import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
+import edu.uw.cs403.plantmap.backend.models.SubmissionServerImp;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,7 +21,7 @@ public class Application {
 
         Connection conn = startDbConnect();
 
-        // TODO: add submission controllers
+        // Plant controllers
         PlantController plantCtr = new PlantController(new PlantServerImp(conn));
 
         post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
@@ -27,6 +29,14 @@ public class Application {
         delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
         put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
         get("/v1/plant", plantCtr::getAllPlant);
+
+        // Submission controllers
+        SubmissionController subCtr = new SubmissionController(new SubmissionServerImp(conn));
+
+        post("/v1/submission", subCtr::createPost);
+        get("/v1/submission/:id",subCtr::getPost);
+        delete("/v1/submission/:id", subCtr::deletePost);
+        get("/v1/submission", subCtr::getAllPost);
 
         // Test without DB
 //        PlantController plantCtrTest = new PlantController(new PlantServerTest());
