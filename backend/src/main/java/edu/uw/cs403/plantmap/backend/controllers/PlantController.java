@@ -46,8 +46,9 @@ public class PlantController {
 
     public Object getAllPlant(Request request, Response response) throws Exception{
         List<Plant> list = server.getAllPlants();
-        JSONArray ja = new JSONArray(list);
-        return ja;
+        response.type("application/json");
+
+        return new JSONArray(list);
     }
 
     public int updatePlant(Request request, Response response) throws Exception{
