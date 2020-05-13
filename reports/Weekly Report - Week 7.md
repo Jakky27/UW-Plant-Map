@@ -33,7 +33,10 @@ ________________
 
 
 **Daniel**
-* 
+* Connected front end to back end for registering a plant and mapping submissions
+* Completed implementation for front end user flow for registering a plant
+* Tested and debugged the app
+* Helped write presentation/reflection
 
 
 **Huan**
