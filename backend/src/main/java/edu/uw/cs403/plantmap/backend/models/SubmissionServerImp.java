@@ -16,9 +16,9 @@ public class SubmissionServerImp implements SubmissionServer {
 
     // SQL statements
     private static String insertStatement = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
-    private static String readStatement = "SELECT * FROM submission WHERE post_id = ?;";
+    private static String readStatement = "SELECT (posted_by, post_date, plant_id, longitude, latitude) FROM submission WHERE post_id = ?;";
     private static String deleteStatement = "DELETE FROM submission WHERE post_id = ?";
-    private static String getAllStatement = "SELECT * FROM submission";
+    private static String getAllStatement = "SELECT (posted_by, post_date, plant_id, longitude, latitude, post_id) FROM submission";
 
     @Override
     public void createSubmission(String posted_by, Date post_date, int plant_id, float longitude, float latitude) throws Exception {
@@ -62,12 +62,13 @@ public class SubmissionServerImp implements SubmissionServer {
             Submission sub = new Submission();
             results.next();
 
-            sub.setPost_id(results.getInt(1));
-            sub.setPosted_by(results.getString(2));
-            sub.setPost_date(results.getDate(3).getTime());
-            sub.setImg(results.getBytes(4));
-            sub.setLongitude(results.getFloat(5));
-            sub.setLatitude(results.getFloat(6));
+            // (posted_by, post_date, plant_id, longitude, latitude)
+            sub.setPost_id(post_id);
+            sub.setPosted_by(results.getString(1));
+            sub.setPost_date(results.getDate(2).getTime());
+            sub.setPlant_id(results.getInt(3));
+            sub.setLongitude(results.getFloat(4));
+            sub.setLatitude(results.getFloat(5));
 
             return sub;
 
@@ -88,12 +89,14 @@ public class SubmissionServerImp implements SubmissionServer {
             while (results.next()){
                 Submission sub = new Submission();
 
-                sub.setPost_id(results.getInt(1));
-                sub.setPosted_by(results.getString(2));
-                sub.setPost_date(results.getDate(3).getTime());
-                sub.setImg(results.getBytes(4));
-                sub.setLongitude(results.getFloat(5));
-                sub.setLatitude(results.getFloat(6));
+                // (posted_by, post_date, plant_id, longitude, latitude)
+                sub.setPosted_by(results.getString(1));
+                sub.setPost_date(results.getDate(2).getTime());
+                sub.setPlant_id(results.getInt(3));
+                sub.setLongitude(results.getFloat(4));
+                sub.setLatitude(results.getFloat(5));
+                sub.setPost_id(results.getInt(6));
+
                 postList.add(sub);
             }
 
