@@ -75,6 +75,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        if (this::UWMap.isInitialized) {
+            loadSubmissions()
+        }
     }
 
     override fun onPause() {
@@ -137,6 +140,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             UWMap.isMyLocationEnabled = true
         }
 
+        loadSubmissions()
+    }
+
+    private fun loadSubmissions() {
         val submissionsGetRequest =
             StringRequest(
                 Request.Method.GET, "https://plantmap.herokuapp.com/v1/submission",
