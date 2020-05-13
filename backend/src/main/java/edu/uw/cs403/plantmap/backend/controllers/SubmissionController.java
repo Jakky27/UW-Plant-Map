@@ -33,8 +33,8 @@ public class SubmissionController {
         if (request.contentType().equals("application/json")) {
             JSONObject bodyJson = new JSONObject(request.body());
             Date date = new Date(bodyJson.getLong(attrDate));
-            server.createSubmission(bodyJson.getString(attrPostby), date, bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
-            return "Successfully posted!";
+            int res = server.createSubmission(bodyJson.getString(attrPostby), date, bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
+            return res;
         } else {
             // response a http error
             response.status(415);

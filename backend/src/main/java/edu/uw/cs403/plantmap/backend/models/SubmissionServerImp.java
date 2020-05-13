@@ -30,6 +30,14 @@ public class SubmissionServerImp implements SubmissionServer {
             preparedStatement.setFloat(4, longitude);
             preparedStatement.setFloat(5,latitude);
             preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()){
+                return rs.getInt(1);
+            }else{
+                return 0;
+            }
+
         } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         }
