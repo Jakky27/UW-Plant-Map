@@ -1,5 +1,7 @@
 package edu.uw.cs403.plantmap.backend.models;
 
+import com.microsoft.sqlserver.jdbc.Geography;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,23 +21,15 @@ public class SubmissionServerImp implements SubmissionServer {
     private static String getAllStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
 
     @Override
-    public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
+    public void createSubmission(String posted_by, Date post_date, int plant_id, float longitude, float latitude) throws Exception {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
             preparedStatement.setString(1,posted_by);
-            preparedStatement.setLong(2,post_date);
+            preparedStatement.setDate(2,post_date);
             preparedStatement.setInt(3,plant_id);
             preparedStatement.setFloat(4, longitude);
             preparedStatement.setFloat(5,latitude);
             preparedStatement.executeUpdate();
-
-            ResultSet rs = preparedStatement.getGeneratedKeys();
-            if (rs.next()){
-                return rs.getInt(1);
-            }else{
-                return 0;
-            }
-
         } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         }
@@ -71,7 +65,7 @@ public class SubmissionServerImp implements SubmissionServer {
             // (posted_by, post_date, plant_id, longitude, latitude)
             sub.setPost_id(post_id);
             sub.setPosted_by(results.getString(1));
-            sub.setPost_date(results.getLong(2));
+            sub.setPost_date(results.getDate(2).getTime());
             sub.setPlant_id(results.getInt(3));
             sub.setLongitude(results.getFloat(4));
             sub.setLatitude(results.getFloat(5));
@@ -97,7 +91,7 @@ public class SubmissionServerImp implements SubmissionServer {
 
                 // (posted_by, post_date, plant_id, longitude, latitude)
                 sub.setPosted_by(results.getString(1));
-                sub.setPost_date(results.getLong(2));
+                sub.setPost_date(results.getDate(2).getTime());
                 sub.setPlant_id(results.getInt(3));
                 sub.setLongitude(results.getFloat(4));
                 sub.setLatitude(results.getFloat(5));

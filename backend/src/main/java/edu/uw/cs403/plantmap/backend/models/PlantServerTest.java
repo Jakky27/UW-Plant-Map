@@ -10,7 +10,7 @@ public class PlantServerTest implements PlantServer{
     private HashMap<String, Plant> map = new HashMap<>();
 
     @Override
-    public int registerPlant(String name, String description) throws Exception {
+    public void registerPlant(String name, String description) throws Exception {
         int id = store.size()+1;
         Plant p = new Plant();
         p.setPlant_id(id);
@@ -18,9 +18,8 @@ public class PlantServerTest implements PlantServer{
         p.setDescription(description);
         store.add(p);
         map.put(name, p);
-//        String output = String.format("register success!\n Plant name %s \n Description: %s\n", name, description);
-//        System.out.println(output);
-        return id;
+        String output = String.format("register success!\n Plant name %s \n Description: %s\n", name, description);
+        System.out.println(output);
     }
 
     @Override

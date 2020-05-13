@@ -1,5 +1,6 @@
 package edu.uw.cs403.plantmap.backend.controllers;
 
+import edu.uw.cs403.plantmap.backend.models.Plant;
 import edu.uw.cs403.plantmap.backend.models.Submission;
 import edu.uw.cs403.plantmap.backend.models.SubmissionServer;
 import org.json.JSONArray;
@@ -31,8 +32,9 @@ public class SubmissionController {
         response.type("text/html");
         if (request.contentType().equals("application/json")) {
             JSONObject bodyJson = new JSONObject(request.body());
-            int res = server.createSubmission(bodyJson.getString(attrPostby), bodyJson.getLong(attrDate), bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
-            return res;
+            Date date = new Date(bodyJson.getLong(attrDate));
+            server.createSubmission(bodyJson.getString(attrPostby), date, bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
+            return "Successfully posted!";
         } else {
             // response a http error
             response.status(415);
