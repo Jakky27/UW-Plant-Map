@@ -52,6 +52,7 @@ public class Application {
             pw.println("500 - Internal Error");
             pw.println();
             exception.printStackTrace(pw);
+            exception.printStackTrace();
 
             response.status(500);
             response.type("text/plain");

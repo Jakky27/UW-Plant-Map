@@ -21,12 +21,20 @@ public class PlantServerImp implements PlantServer {
     private static String getAllStatement = "SELECT * FROM plant";
 
     @Override
-    public void registerPlant(String name, String description) throws Exception {
+    public int registerPlant(String name, String description) throws Exception {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,description);
             preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()){
+                return rs.getInt(1);
+            }else {
+                return 0;
+            }
+
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         }
