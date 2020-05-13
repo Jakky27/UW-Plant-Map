@@ -46,7 +46,8 @@ ________________
 
 
 **Jacky**
-* 
+* Implemented the live feed in the frontend
+* Helped write the presenation for the live feed portion
 
 
 **Kouroche**
