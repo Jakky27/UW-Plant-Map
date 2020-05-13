@@ -64,7 +64,7 @@ public class SubmissionServerImp implements SubmissionServer {
 
             sub.setPost_id(results.getInt(1));
             sub.setPosted_by(results.getString(2));
-            sub.setPost_date(results.getDate(3));
+            sub.setPost_date(results.getDate(3).getTime());
             sub.setImg(results.getBytes(4));
             sub.setLongitude(results.getFloat(5));
             sub.setLatitude(results.getFloat(6));
@@ -90,7 +90,7 @@ public class SubmissionServerImp implements SubmissionServer {
 
                 sub.setPost_id(results.getInt(1));
                 sub.setPosted_by(results.getString(2));
-                sub.setPost_date(results.getDate(3));
+                sub.setPost_date(results.getDate(3).getTime());
                 sub.setImg(results.getBytes(4));
                 sub.setLongitude(results.getFloat(5));
                 sub.setLatitude(results.getFloat(6));

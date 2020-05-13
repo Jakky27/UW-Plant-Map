@@ -71,7 +71,7 @@ public class PlantServerImp implements PlantServer {
 
             return plant;
 
-        } catch (SQLException  e){
+        } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         }
     }
