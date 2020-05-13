@@ -6,13 +6,11 @@ import spark.Request;
 import spark.Response;
 import org.json.*;
 
-import java.text.Format;
 import java.util.List;
 
 public class PlantController {
 
     private PlantServer server;
-    private static String attrID = "plant_id";
     private static String attrName = "name";
     private static String attrDescription = "description";
 
@@ -25,9 +23,8 @@ public class PlantController {
         // ensure the body type is JSON
         if (request.contentType().equals("application/json")) {
             JSONObject bodyJson = new JSONObject(request.body());
-            server.registerPlant(bodyJson.getString(attrName), bodyJson.getString(attrDescription));
-            Plant newPlant = server.getPlantByName(bodyJson.getString(attrName));
-            return newPlant.getPlant_id();
+            int res = server.registerPlant(bodyJson.getString(attrName), bodyJson.getString(attrDescription));
+            return res;
         } else {
             // response a http error
             response.type("text/html");

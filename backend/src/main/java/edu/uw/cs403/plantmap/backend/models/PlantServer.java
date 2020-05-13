@@ -1,8 +1,6 @@
 package edu.uw.cs403.plantmap.backend.models;
 
-import java.sql.Connection;
 import java.util.List;
-import java.util.UUID;
 
 /*
 * PlantAccess access the plant data in database
@@ -12,7 +10,7 @@ public interface PlantServer {
     /*
     * registerPlant registers a new plant into the database
     */
-    public void registerPlant(String name, String description) throws Exception;
+    public int registerPlant(String name, String description) throws Exception;
 
     /*
     * GetPlant searches for a plant
