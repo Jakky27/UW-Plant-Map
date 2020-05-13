@@ -23,7 +23,7 @@ public class PlantServerImp implements PlantServer {
     @Override
     public int registerPlant(String name, String description) throws Exception {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,description);
             preparedStatement.executeUpdate();

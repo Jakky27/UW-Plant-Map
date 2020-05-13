@@ -21,7 +21,7 @@ public class SubmissionServerImp implements SubmissionServer {
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,posted_by);
             preparedStatement.setLong(2,post_date);
             preparedStatement.setInt(3,plant_id);
