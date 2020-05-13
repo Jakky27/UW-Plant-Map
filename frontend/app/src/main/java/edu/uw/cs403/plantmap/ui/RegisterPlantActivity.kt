@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -77,19 +78,19 @@ class RegisterPlantActivity : AppCompatActivity() {
                             entity1["name"] = name
                             entity1["description"] = description
                             val plantPostRequest = object:
-                                JsonObjectRequest(Method.POST, baseURL + "plant", JSONObject(entity1),
+                                StringRequest(Method.POST, baseURL + "plant",
                                 Response.Listener { response ->
-                                    val plantId: Int = ObjectMapper().readValue<ObjectNode>(response.toString()).get("plant_id").asInt()
+                                    val plantId = response.toInt()
 
                                     val entity2 = HashMap<Any?, Any?>()
                                     entity2["plant_id"] = plantId
                                     entity2["latitude"] = location.latitude.toFloat()
                                     entity2["longitude"] = location.longitude.toFloat()
-                                    entity2["post_date"] = System.currentTimeMillis()
+                                    entity2["posted_on"] = System.currentTimeMillis()
                                     entity2["posted_by"] = "Test User"
 
                                     val submissionPostRequest = object:
-                                        JsonObjectRequest(Method.POST, baseURL + "submission", JSONObject(entity2),
+                                        StringRequest(Method.POST, baseURL + "submission",
                                             Response.Listener { _ ->
                                                 // TODO: something
                                             },
@@ -102,18 +103,26 @@ class RegisterPlantActivity : AppCompatActivity() {
                                                 headers["Content-Type"] = "application/json"
                                                 return headers
                                             }
+
+                                            override fun getBody(): ByteArray {
+                                                return JSONObject(entity2).toString().toByteArray()
+                                            }
                                         }
 
                                     RequestQueueSingleton.getInstance(this).addToRequestQueue(submissionPostRequest)
                                 },
                                 Response.ErrorListener { error ->
-                                    // TODO: handle
+                                    error.stackTrace
                                 })
                             {
                                 override fun getHeaders(): MutableMap<String, String>{
                                     val headers = HashMap<String, String>()
                                     headers["Content-Type"] = "application/json"
                                     return headers
+                                }
+
+                                override fun getBody(): ByteArray {
+                                    return JSONObject(entity1).toString().toByteArray()
                                 }
                             }
 
