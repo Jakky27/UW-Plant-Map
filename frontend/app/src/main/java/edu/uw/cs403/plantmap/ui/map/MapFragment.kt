@@ -17,8 +17,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.UWPlantMapApplication
+import edu.uw.cs403.plantmap.models.Submission
 import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
 
 
@@ -98,7 +101,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun initSearchBarCallbacks() {
         // Open and closing searchbar
-        searchView.setOnQueryTextFocusChangeListener { view, b ->
+        searchView.setOnQueryTextFocusChangeListener { _, _ ->
             Log.d("DEBUG", "Focus Toggled")
         }
         //
@@ -125,13 +128,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         UWMap = googleMap
         UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
         UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
-        UWMap.uiSettings.setMyLocationButtonEnabled(false)
+        UWMap.uiSettings.isMyLocationButtonEnabled = false
 
         if (locationEnabled()) {
-            UWMap.setMyLocationEnabled(true)
+            UWMap.isMyLocationEnabled = true
         }
 
-        //TODO: Load in plant submissions
+        val submissions: List<Submission> =
+            (this.activity!!.application as UWPlantMapApplication).appClient.getSubmissions()
+
+        for (submission in submissions) {
+            val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
+            val title = "Submission posted by " + submission.postedBy + " on " + submission.postedOn
+            UWMap.addMarker(MarkerOptions().position(latLng).title(title))
+        }
     }
 
     private fun locationEnabled() =

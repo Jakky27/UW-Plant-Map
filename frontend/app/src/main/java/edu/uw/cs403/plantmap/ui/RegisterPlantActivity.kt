@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.UWPlantMapApplication
 
 class RegisterPlantActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -65,6 +66,13 @@ class RegisterPlantActivity : AppCompatActivity() {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
                             // TODO: send image to controller to be registered
+                            val client =
+                                (this.application as UWPlantMapApplication).appClient
+
+                            val plantId = client.registerPlant(name, description)
+                            client.postSubmission(plantId, location.latitude.toFloat(),
+                                location.longitude.toFloat(), System.currentTimeMillis(), "TestUser")
+
                             finish()
                         }
                     }
