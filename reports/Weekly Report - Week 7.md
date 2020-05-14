@@ -54,4 +54,8 @@ ________________
 
 
 **Kouroche**
-* 
+* Setup Heroku server with auto-deploy, setup the database connection with environment variables.
+* Setup the CircleCI auto-deploy on successful builds.
+* Fixed multiple bugs and ironed out the backend. 
+* Updated the README.md to have information on how to build the components.
+* Added an exception handler for error 500s so we can see where they fail.
