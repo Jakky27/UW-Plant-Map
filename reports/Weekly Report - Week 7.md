@@ -29,7 +29,10 @@ ________________
 
 ## Contributions of individual team members.
 **Brian**
-* 
+* Basic server calls have been completed, and with a solid foundation, it is easy now to add additional server functionality
+* I also made some minor changes to the database so that it was more inline with our original schema.
+* Helped write some of the server controller implementations.
+* Over the next week I want to fix some inconsistencies in our coding style/ naming conventions as well as better document our code.
 
 
 **Daniel**
