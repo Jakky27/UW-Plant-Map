@@ -23,7 +23,9 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
-import edu.uw.cs403.plantmap.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.BackendClient
+import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.UWPlantMapClient
 import edu.uw.cs403.plantmap.models.Submission
 import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
 
@@ -33,6 +35,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         LatLngBounds(LatLng(47.647453, -122.314609), LatLng(47.662556, -122.298299))
     private val UW_COORDS = LatLng(47.656021, -122.307156)
     private val ZOOM = 15f
+
+    private lateinit var client: UWPlantMapClient
 
     private lateinit var mapViewModel: MapViewModel
 
@@ -63,6 +67,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         registerFAB.setOnClickListener { _ ->
             context!!.startActivity(Intent(context!!, RegisterPlantActivity::class.java))
         }
+
+        client =  BackendClient.getInstance(
+            RequestQueueSingleton.getInstance(this.context!!.applicationContext)
+        )
 
         return root
     }
@@ -132,8 +140,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         UWMap = googleMap
-//        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
-//        UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
+        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
+        UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
         UWMap.uiSettings.isMyLocationButtonEnabled = false
 
         if (locationEnabled()) {
@@ -144,22 +152,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun loadSubmissions() {
-        val submissionsGetRequest =
-            StringRequest(
-                Request.Method.GET, "https://plantmap.herokuapp.com/v1/submission",
-                Response.Listener { response ->
-                    val submissions: List<Submission> = ObjectMapper().readValue(response)
-                    for (submission in submissions) {
-                        val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
-                        val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
-                        UWMap.addMarker(MarkerOptions().position(latLng).title(title))
-                    }
-                },
-                Response.ErrorListener { error ->
-                    // TODO: something
-                })
-
-        RequestQueueSingleton.getInstance(this.activity!!.applicationContext).addToRequestQueue(submissionsGetRequest)
+        client.getSubmissions(
+            Response.Listener { submissions ->
+                for (submission in submissions) {
+                    val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
+                    val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
+                    UWMap.addMarker(MarkerOptions().position(latLng).title(title))
+                }
+            },
+            Response.ErrorListener { error ->
+                // TODO: something
+            }
+        )
     }
 
     private fun locationEnabled() =

@@ -10,16 +10,14 @@ import android.provider.MediaStore
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
-import edu.uw.cs403.plantmap.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.BackendClient
+import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.UWPlantMapClient
 import org.json.JSONObject
 
 class RegisterPlantActivity : AppCompatActivity() {
@@ -28,6 +26,8 @@ class RegisterPlantActivity : AppCompatActivity() {
     val NO_LOCATION_TEXT = "Please enable location services"
     val NO_CAMERA_TEXT = "Please enable camera"
     val DURATION = Toast.LENGTH_SHORT
+
+    private lateinit var client: UWPlantMapClient
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var addImageButton: ImageButton
@@ -73,67 +73,30 @@ class RegisterPlantActivity : AppCompatActivity() {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
                             // TODO: send image to controller to be registered
-                            val baseURL = "https://plantmap.herokuapp.com/v1/"
-                            val entity1 = HashMap<Any?, Any?>()
-                            entity1["name"] = name
-                            entity1["description"] = description
-                            val plantPostRequest = object:
-                                StringRequest(Method.POST, baseURL + "plant",
-                                Response.Listener { response ->
-                                    val plantId = response.toInt()
-
-                                    val entity2 = HashMap<Any?, Any?>()
-                                    entity2["plant_id"] = plantId
-                                    entity2["latitude"] = location.latitude.toFloat()
-                                    entity2["longitude"] = location.longitude.toFloat()
-                                    entity2["posted_on"] = System.currentTimeMillis()
-                                    entity2["posted_by"] = "Test User"
-
-                                    val submissionPostRequest = object:
-                                        StringRequest(Method.POST, baseURL + "submission",
-                                            Response.Listener { _ ->
-                                                // TODO: something
-                                            },
-                                            Response.ErrorListener { error ->
-                                                // TODO: something
-                                            })
-                                        {
-                                            override fun getHeaders(): MutableMap<String, String>{
-                                                val headers = HashMap<String, String>()
-                                                headers["Content-Type"] = "application/json"
-                                                return headers
-                                            }
-
-                                            override fun getBody(): ByteArray {
-                                                return JSONObject(entity2).toString().toByteArray()
-                                            }
-                                        }
-
-                                    RequestQueueSingleton.getInstance(this).addToRequestQueue(submissionPostRequest)
-                                },
-                                Response.ErrorListener { error ->
-                                    error.stackTrace
-                                })
-                            {
-                                override fun getHeaders(): MutableMap<String, String>{
-                                    val headers = HashMap<String, String>()
-                                    headers["Content-Type"] = "application/json"
-                                    return headers
-                                }
-
-                                override fun getBody(): ByteArray {
-                                    return JSONObject(entity1).toString().toByteArray()
-                                }
+                            val errorListener = Response.ErrorListener { error ->
+                                error.stackTrace
                             }
 
+                            val submissionResponseListener = Response.Listener<Int> { _ ->
+                                // TODO: something more
+                            }
+
+                            val plantResponseListener = Response.Listener<Int> { plantId ->
+                                client.postSubmission(plantId, location.latitude.toFloat(),
+                                    location.longitude.toFloat(), System.currentTimeMillis(),
+                                    "Test User", submissionResponseListener, errorListener)
+                            }
+
+
+                            client.postPlant(name, description, plantResponseListener, errorListener)
+
                             finish()
-
-                            RequestQueueSingleton.getInstance(this).addToRequestQueue(plantPostRequest)
-
                         }
                     }
             }
         }
+
+        client = BackendClient.getInstance(RequestQueueSingleton.getInstance(this.applicationContext))
 
         cancelButton.setOnClickListener { _ ->
             finish()

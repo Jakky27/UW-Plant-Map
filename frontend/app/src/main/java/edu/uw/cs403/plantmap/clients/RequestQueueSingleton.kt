@@ -1,4 +1,4 @@
-package edu.uw.cs403.plantmap
+package edu.uw.cs403.plantmap.clients
 
 import android.content.Context
 import com.android.volley.Request
@@ -16,9 +16,7 @@ class RequestQueueSingleton constructor(context: Context) {
                 }
             }
     }
-    val requestQueue: RequestQueue by lazy {
-        // applicationContext is key, it keeps you from leaking the
-        // Activity or BroadcastReceiver if someone passes one in.
+    private val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }
     fun <T> addToRequestQueue(req: Request<T>) {
