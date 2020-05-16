@@ -1,15 +1,17 @@
 package edu.uw.cs403.plantmap.backend.models;
 
+import edu.uw.cs403.plantmap.backend.SQLConnectionPool;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.*;
 
 public class PlantServerImp implements PlantServer {
 
-    private Connection conn;
+    private SQLConnectionPool pool;
 
-    public PlantServerImp(Connection conn) {
-        this.conn = conn;
+    public PlantServerImp(SQLConnectionPool pool) {
+        this.pool = pool;
     }
 
     // SQL statements
@@ -22,7 +24,10 @@ public class PlantServerImp implements PlantServer {
 
     @Override
     public int registerPlant(String name, String description) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,description);
@@ -37,12 +42,20 @@ public class PlantServerImp implements PlantServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public Plant getPlantById(int plant_id) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             PreparedStatement preparedStatement = conn.prepareStatement(readIdStatement);
             preparedStatement.setInt(1,plant_id);
@@ -59,12 +72,20 @@ public class PlantServerImp implements PlantServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public Plant getPlantByName(String name) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             PreparedStatement preparedStatement = conn.prepareStatement(readNameStatement);
             preparedStatement.setString(1,name);
@@ -81,12 +102,20 @@ public class PlantServerImp implements PlantServer {
 
         } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public int updatePlant(int plant_id, String name, String description) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // get plant from db
             Plant plant = getPlantByName(name);
 
@@ -102,12 +131,20 @@ public class PlantServerImp implements PlantServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public int deletePlant(int plant_id) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             PreparedStatement preparedStatement = conn.prepareStatement(deleteStatement);
             preparedStatement.setInt(1,plant_id);
@@ -117,12 +154,20 @@ public class PlantServerImp implements PlantServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public List<Plant> getAllPlants() throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(getAllStatement);
             List<Plant> plantList = new ArrayList<>();
@@ -137,6 +182,10 @@ public class PlantServerImp implements PlantServer {
             return plantList;
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 }

@@ -19,32 +19,24 @@ public class Application {
 
         get("/", (req, res) -> "UW PlantMap API server");
 
-        Connection conn = startDbConnect();
+        SQLConnectionPool pool = createConnectionPool();
 
-        // Plant controllers
-        PlantController plantCtr = new PlantController(new PlantServerImp(conn));
+        // Plant controller
+        PlantController plantCtr = new PlantController(new PlantServerImp(pool));
 
-        post("/v1/plant", (req, res) -> plantCtr.addPlant(req, res));
-        get("/v1/plant/:id", (req, res) -> plantCtr.getPlant(req, res));
-        delete("/v1/plant/:id", (req, res) -> plantCtr.deletePlant(req, res));
-        put("/v1/plant/:id", (req, res) -> plantCtr.updatePlant(req, res));
+        post("/v1/plant", plantCtr::addPlant);
+        get("/v1/plant/:id", plantCtr::getPlant);
+        delete("/v1/plant/:id", plantCtr::deletePlant);
+        put("/v1/plant/:id", plantCtr::updatePlant);
         get("/v1/plant", plantCtr::getAllPlant);
 
-        // Submission controllers
-        SubmissionController subCtr = new SubmissionController(new SubmissionServerImp(conn));
+        // Submission controller
+        SubmissionController subCtr = new SubmissionController(new SubmissionServerImp(pool));
 
         post("/v1/submission", subCtr::createPost);
         get("/v1/submission/:id",subCtr::getPost);
         delete("/v1/submission/:id", subCtr::deletePost);
         get("/v1/submission", subCtr::getAllPost);
-
-        // Test without DB
-//        PlantController plantCtrTest = new PlantController(new PlantServerTest());
-//        post("/v1/plant", plantCtrTest::addPlant);
-//        get("/v1/plant/:id", plantCtrTest::getPlant);
-//        get("/v1/plant", plantCtrTest::getAllPlant);
-//        delete("/v1/plant/:id", plantCtrTest::deletePlant);
-//        put("/v1/plant/:id", plantCtrTest::updatePlant);
 
         exception(Exception.class, (exception, request, response) -> {
             StringWriter sw = new StringWriter();
@@ -66,27 +58,15 @@ public class Application {
             return Integer.parseInt(processBuilder.environment().get("PORT"));
         }
 
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
+        return 4567; // Return default port if heroku-port isn't set (i.e. on localhost)
     }
 
-    public static Connection startDbConnect() {
+    public static SQLConnectionPool createConnectionPool() {
         String hostName = System.getenv("DB_HOST");
         String dbName = System.getenv("DB_NAME");
         String user = System.getenv("DB_USER");
         String password = System.getenv("DB_PASSWORD");
-        String url = String.format("jdbc:sqlserver://%s:1433;database=%s;user=%s;password=%s;encrypt=true;"
-                + "hostNameInCertificate=*.database.windows.net;loginTimeout=30;", hostName, dbName, user, password);
-        Connection connection = null;
 
-        try {
-            connection = DriverManager.getConnection(url);
-            String schema = connection.getSchema();
-            System.out.println("Successful connection - Schema: " + schema);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return connection;
+        return new SQLConnectionPool(hostName, dbName, user, password);
     }
 }

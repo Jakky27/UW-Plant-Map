@@ -1,15 +1,17 @@
 package edu.uw.cs403.plantmap.backend.models;
 
+import edu.uw.cs403.plantmap.backend.SQLConnectionPool;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SubmissionServerImp implements SubmissionServer {
 
-    private Connection conn;
+    private SQLConnectionPool pool;
 
-    public SubmissionServerImp(Connection conn) {
-        this.conn = conn;
+    public SubmissionServerImp(SQLConnectionPool pool) {
+        this.pool = pool;
     }
 
     // SQL statements
@@ -20,7 +22,11 @@ public class SubmissionServerImp implements SubmissionServer {
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,posted_by);
             preparedStatement.setLong(2,post_date);
@@ -38,12 +44,20 @@ public class SubmissionServerImp implements SubmissionServer {
 
         } catch (SQLException e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public int deleteSubmission(int post_id) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             PreparedStatement preparedStatement = conn.prepareStatement(deleteStatement);
             preparedStatement.setInt(1,post_id);
@@ -53,12 +67,20 @@ public class SubmissionServerImp implements SubmissionServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public Submission getSubmission(int post_id) throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             PreparedStatement preparedStatement = conn.prepareStatement(readStatement);
             preparedStatement.setInt(1,post_id);
@@ -80,12 +102,20 @@ public class SubmissionServerImp implements SubmissionServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 
     @Override
     public List<Submission> getAllSubmission() throws Exception {
+        Connection conn = null;
+
         try {
+            conn = pool.getConnection();
+
             // run SQL
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(getAllStatement);
@@ -110,6 +140,10 @@ public class SubmissionServerImp implements SubmissionServer {
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
         }
     }
 }
