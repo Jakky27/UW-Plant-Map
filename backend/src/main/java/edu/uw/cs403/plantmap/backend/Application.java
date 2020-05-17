@@ -67,6 +67,12 @@ public class Application {
         String user = System.getenv("DB_USER");
         String password = System.getenv("DB_PASSWORD");
 
+        if (hostName == null || dbName == null || user == null || password == null) {
+            System.out.println("Failed to load database parameters for connection! Make sure the DB_HOST, DB_NAME, " +
+                    "DB_USER, DB_PASSWORD environment variables are set.");
+            System.exit(1);
+        }
+
         return new SQLConnectionPool(hostName, dbName, user, password);
     }
 }
