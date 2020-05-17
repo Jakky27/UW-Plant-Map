@@ -2,7 +2,6 @@ package edu.uw.cs403.plantmap.backend;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
@@ -10,8 +9,6 @@ import java.util.Set;
 import java.util.Stack;
 
 public class SQLConnectionPool {
-    // TODO: Fix documentation for this class
-
     private String hostName;
     private String dbName;
     private String userName;
@@ -31,8 +28,10 @@ public class SQLConnectionPool {
     /**
      * Constructor
      *
-     * @param databaseUrl
-     *            The connection url
+     * @param hostName
+     *            The connection hostname
+     * @param dbName
+     *            The connection database name
      * @param userName
      *            user name
      * @param password
@@ -136,7 +135,7 @@ public class SQLConnectionPool {
 
             conn = DriverManager.getConnection(url);
         } catch (SQLException ex) {
-            throw new RuntimeException("Could not create new connection");
+            throw new SQLException("Could not create new connection");
         }
         return conn;
     }
@@ -161,13 +160,12 @@ public class SQLConnectionPool {
      *
      * @param conn
      *            The connection for verification.
-     * @return the available connection.
      * @throws SQLException
      *             Fail to get an available connection
      */
-    private Connection makeAvailable(Connection conn) throws SQLException {
+    private void makeAvailable(Connection conn) throws SQLException {
         if (isConnectionAvailable(conn)) {
-            return conn;
+            return;
         }
 
         // If the connection is't available, reconnect it.
@@ -178,7 +176,6 @@ public class SQLConnectionPool {
         conn = createNewConnection();
         occupiedPool.add(conn);
         connNum++;
-        return conn;
     }
 
     /**
