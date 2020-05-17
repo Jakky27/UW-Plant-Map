@@ -15,12 +15,12 @@ public class PlantServerImp implements PlantServer {
     }
 
     // SQL statements
-    private static String insertStatement = "INSERT INTO plant (name, description) VALUES (?, ?);";
-    private static String readIdStatement = "SELECT * FROM plant WHERE plant_id = ?;";
-    private static String readNameStatement = "SELECT * FROM plant WHERE name = ?;";
-    private static String updateStatement = "Update plant SET name = ?, description = ? WHERE plant_id = ?";
-    private static String deleteStatement = "DELETE FROM plant WHERE plant_id = ?";
-    private static String getAllStatement = "SELECT * FROM plant";
+    private static final String STATEMENT_INSERT = "INSERT INTO plant (name, description) VALUES (?, ?);";
+    private static final String STATEMENT_READID = "SELECT * FROM plant WHERE plant_id = ?;";
+    private static final String STATEMENT_READNAME = "SELECT * FROM plant WHERE name = ?;";
+    private static final String STATEMENT_UPDATE = "Update plant SET name = ?, description = ? WHERE plant_id = ?";
+    private static final String STATEMENT_DELETE = "DELETE FROM plant WHERE plant_id = ?";
+    private static final String STATEMENT_GETALL = "SELECT * FROM plant";
 
     @Override
     public int registerPlant(String name, String description) throws Exception {
@@ -28,7 +28,7 @@ public class PlantServerImp implements PlantServer {
 
         try {
             conn = pool.getConnection();
-            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_INSERT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,name);
             preparedStatement.setString(2,description);
             preparedStatement.executeUpdate();
@@ -57,7 +57,7 @@ public class PlantServerImp implements PlantServer {
             conn = pool.getConnection();
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(readIdStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_READID);
             preparedStatement.setInt(1,plant_id);
             ResultSet results = preparedStatement.executeQuery();
 
@@ -87,7 +87,7 @@ public class PlantServerImp implements PlantServer {
             conn = pool.getConnection();
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(readNameStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_READNAME);
             preparedStatement.setString(1,name);
             ResultSet results = preparedStatement.executeQuery();
 
@@ -120,7 +120,7 @@ public class PlantServerImp implements PlantServer {
             Plant plant = getPlantByName(name);
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(updateStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_UPDATE);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, description);
             preparedStatement.setInt(3,plant_id);
@@ -146,7 +146,7 @@ public class PlantServerImp implements PlantServer {
             conn = pool.getConnection();
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(deleteStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_DELETE);
             preparedStatement.setInt(1,plant_id);
             preparedStatement.executeUpdate();
 
@@ -169,7 +169,7 @@ public class PlantServerImp implements PlantServer {
             conn = pool.getConnection();
 
             Statement statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(getAllStatement);
+            ResultSet results = statement.executeQuery(STATEMENT_GETALL);
             List<Plant> plantList = new ArrayList<>();
             while (results.next()){
                 Plant plant = new Plant();

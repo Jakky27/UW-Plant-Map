@@ -15,10 +15,10 @@ public class SubmissionServerImp implements SubmissionServer {
     }
 
     // SQL statements
-    private static String insertStatement = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
-    private static String readStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
-    private static String deleteStatement = "DELETE FROM submission WHERE post_id = ?";
-    private static String getAllStatement = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
+    private static final String STATEMENT_INSERT = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
+    private static final String STATEMENT_READ = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
+    private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?";
+    private static final String STATEMENT_GETALL = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
@@ -27,7 +27,7 @@ public class SubmissionServerImp implements SubmissionServer {
         try {
             conn = pool.getConnection();
 
-            PreparedStatement preparedStatement = conn.prepareStatement(insertStatement, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_INSERT, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1,posted_by);
             preparedStatement.setLong(2,post_date);
             preparedStatement.setInt(3,plant_id);
@@ -59,7 +59,7 @@ public class SubmissionServerImp implements SubmissionServer {
             conn = pool.getConnection();
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(deleteStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_DELETE);
             preparedStatement.setInt(1,post_id);
             preparedStatement.executeUpdate();
 
@@ -82,7 +82,7 @@ public class SubmissionServerImp implements SubmissionServer {
             conn = pool.getConnection();
 
             // run SQL
-            PreparedStatement preparedStatement = conn.prepareStatement(readStatement);
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_READ);
             preparedStatement.setInt(1,post_id);
             ResultSet results = preparedStatement.executeQuery();
 
@@ -118,7 +118,7 @@ public class SubmissionServerImp implements SubmissionServer {
 
             // run SQL
             Statement statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(getAllStatement);
+            ResultSet results = statement.executeQuery(STATEMENT_GETALL);
             List<Submission> postList = new ArrayList<>();
 
             // form new Plant object from result set
