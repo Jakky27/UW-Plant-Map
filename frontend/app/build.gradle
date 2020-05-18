@@ -32,8 +32,13 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude("META-INF/*.kotlin_module")
     }
+
     lintOptions {
         warning 'InvalidPackage'
+    }
+
+    defaultConfig {
+        manifestPlaceholders = [mapsApiKey: secretProps['mapsApiKey']]
     }
 }
 
