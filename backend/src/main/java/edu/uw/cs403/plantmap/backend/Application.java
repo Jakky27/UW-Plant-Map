@@ -3,23 +3,23 @@ package edu.uw.cs403.plantmap.backend;
 import edu.uw.cs403.plantmap.backend.controllers.PlantController;
 import edu.uw.cs403.plantmap.backend.controllers.SubmissionController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
-import edu.uw.cs403.plantmap.backend.models.PlantServerTest;
 import edu.uw.cs403.plantmap.backend.models.SubmissionServerImp;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 
 import static spark.Spark.*;
 
 public class Application {
     public static void main(String[] args) {
+        SQLConnectionPool pool = createConnectionPool();
+        SQLBootstrapper bootstrap = new SQLBootstrapper(pool);
+
+        bootstrap.createTablesOnFirstRun();
+
         port(getHerokuAssignedPort());
 
         get("/", (req, res) -> "UW PlantMap API server");
-
-        SQLConnectionPool pool = createConnectionPool();
 
         // Plant controller
         PlantController plantCtr = new PlantController(new PlantServerImp(pool));
