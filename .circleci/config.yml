@@ -119,8 +119,9 @@ jobs: # a collection of steps
           command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
       - run:
           name: Deploy to Heroku
-          command: | # Deploy only if changes have been made in backend/**/* or Procfile
-            git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^backend/|^Procfile" && git push heroku master || true
+          command: | # Deploy only if changes have been made in backend/**/* or Procfile or .circleci/
+            git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^backend/|^Procfile|^.circleci/" || exit 0
+            git push heroku master
 
 # Orchestrate or schedule a set of jobs
 workflows:
