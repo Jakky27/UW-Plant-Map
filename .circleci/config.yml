@@ -68,6 +68,9 @@ jobs: # a collection of steps
     steps:
       - checkout:
           path: ~/plantmap
+      - run:
+          name: Setup project secrets and keys
+          command: bash .circleci/setup-secrets.sh # run a script to set up Heroku
       - restore_cache:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "frontend/build.gradle" }}-{{ checksum  "frontend/app/build.gradle" }}
       - run:
