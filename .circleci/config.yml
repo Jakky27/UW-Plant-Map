@@ -14,6 +14,12 @@ jobs: # a collection of steps
     steps: # a collection of executable commands
       - checkout: # check out source code to working directory
           path: ~/plantmap
+      - run:
+          name: Skip build if pushing a team report
+          command: |
+            if git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^reports/"; then
+                circleci-agent step halt
+            fi
       # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
@@ -68,6 +74,12 @@ jobs: # a collection of steps
     steps:
       - checkout:
           path: ~/plantmap
+      - run:
+          name: Skip build if pushing a team report
+          command: |
+            if git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^reports/"; then
+                circleci-agent step halt
+            fi
       - run:
           name: Setup project secrets and keys
           command: bash .circleci/setup-secrets.sh # run a script to set up Heroku
