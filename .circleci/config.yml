@@ -105,7 +105,7 @@ jobs: # a collection of steps
       - run:
           name: Deploy to Heroku
           command: | # Deploy only if changes have been made in backend/**/* or Procfile
-            git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^backend/|^Procfile" && git push heroku master
+            git diff --name-only --diff-filter=AMDR @~..@ | grep -E "^backend/|^Procfile" && git push heroku master || true
 
 # Orchestrate or schedule a set of jobs
 workflows:
