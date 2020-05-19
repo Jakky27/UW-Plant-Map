@@ -26,4 +26,9 @@ public interface SubmissionServer {
      * getAllSubmission gets all posts
      */
     public List<Submission> getAllSubmission() throws Exception;
+
+    /*
+     * Update submissions allows add or remove images in a post
+     */
+    public int updateSubmission(int post_id, byte[] image) throws Exception;
 }

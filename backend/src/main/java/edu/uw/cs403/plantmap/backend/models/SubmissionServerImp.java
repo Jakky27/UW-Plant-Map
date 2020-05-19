@@ -19,6 +19,7 @@ public class SubmissionServerImp implements SubmissionServer {
     private static final String STATEMENT_READ = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?";
     private static final String STATEMENT_GETALL = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
+    private static final String STATEMENT_UPDATE = "UPDATE submission SET img = ? WHERE post_id = ?";
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
@@ -137,6 +138,30 @@ public class SubmissionServerImp implements SubmissionServer {
             }
 
             return postList;
+
+        } catch (SQLException  e){
+            throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
+        }
+    }
+
+    @Override
+    public int updateSubmission(int post_id, byte[] image) throws Exception {
+        Connection conn = null;
+
+        try {
+            conn = pool.getConnection();
+
+            // run SQL
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_UPDATE);
+            preparedStatement.setBytes(1, image);
+            preparedStatement.setInt(2,post_id);
+            preparedStatement.executeUpdate();
+
+           return post_id;
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);
