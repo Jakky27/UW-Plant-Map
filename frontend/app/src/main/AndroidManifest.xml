@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.RegisterPlantActivity" />
+        <activity android:name=".ui.RegisterSubmissionActivity" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" android:required="false"/>

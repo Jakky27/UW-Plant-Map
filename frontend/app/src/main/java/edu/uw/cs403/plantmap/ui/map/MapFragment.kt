@@ -12,11 +12,7 @@ import android.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -26,24 +22,26 @@ import edu.uw.cs403.plantmap.R
 import edu.uw.cs403.plantmap.clients.BackendClient
 import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
 import edu.uw.cs403.plantmap.clients.UWPlantMapClient
-import edu.uw.cs403.plantmap.models.Submission
-import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
+import edu.uw.cs403.plantmap.ui.RegisterSubmissionActivity
 
-
+/**
+ * Fragment that represents the main page of the app. This contains the map (with plant locations),
+ * a search bar, and a button to register a new plant
+ */
 class MapFragment : Fragment(), OnMapReadyCallback {
+    // Bounds for map camera
     private val UW_BOUNDS =
         LatLngBounds(LatLng(47.647453, -122.314609), LatLng(47.662556, -122.298299))
+    // Coordinates to center map camera at
     private val UW_COORDS = LatLng(47.656021, -122.307156)
     private val ZOOM = 15f
 
     private lateinit var client: UWPlantMapClient
 
     private lateinit var mapViewModel: MapViewModel
-
     private lateinit var searchView: SearchView
     private lateinit var mapView: MapView
     private lateinit var registerFAB : FloatingActionButton
-
     private lateinit var UWMap: GoogleMap
 
     override fun onCreateView(
@@ -55,19 +53,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ViewModelProviders.of(this).get(MapViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_map, container, false)
 
-        // Initialize widgets
+        // Get widgets
         searchView = root.findViewById(R.id.mapSearch)
         mapView = root.findViewById(R.id.mapView)
-
+        registerFAB = root.findViewById(R.id.registerPlantFAB)
 
         initSearchBarCallbacks()
-        initMap(savedInstanceState)
 
-        registerFAB = root.findViewById(R.id.registerPlantFAB)
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
+
         registerFAB.setOnClickListener { _ ->
-            context!!.startActivity(Intent(context!!, RegisterPlantActivity::class.java))
+            context!!.startActivity(Intent(context!!, RegisterSubmissionActivity::class.java))
         }
 
+        // Get client singleton
         client =  BackendClient.getInstance(
             RequestQueueSingleton.getInstance(this.context!!.applicationContext)
         )
@@ -96,6 +96,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        if (this::UWMap.isInitialized) {
+            loadSubmissions()
+        }
     }
 
     override fun onStop() {
@@ -133,17 +136,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-    private fun initMap(savedInstanceState: Bundle?) {
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
+        // get map and set bounds
         UWMap = googleMap
         UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
         UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
-        UWMap.uiSettings.isMyLocationButtonEnabled = false
 
+        // disable mylocation button, and enable location on map (if we have the permission)
+        UWMap.uiSettings.isMyLocationButtonEnabled = false
         if (locationEnabled()) {
             UWMap.isMyLocationEnabled = true
         }
@@ -151,6 +151,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         loadSubmissions()
     }
 
+    /**
+     * Sends a request for submissions, and presents them on the map if a response is recieved
+     */
     private fun loadSubmissions() {
         client.getSubmissions(
             Response.Listener { submissions ->
@@ -166,6 +169,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
+    /**
+     * True if and only if we have location permissions
+     */
     private fun locationEnabled() =
         (ContextCompat.checkSelfPermission(this.context!!, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED)

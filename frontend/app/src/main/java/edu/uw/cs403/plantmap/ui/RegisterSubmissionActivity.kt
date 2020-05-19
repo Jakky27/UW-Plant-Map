@@ -20,11 +20,15 @@ import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
 import edu.uw.cs403.plantmap.clients.UWPlantMapClient
 import org.json.JSONObject
 
-class RegisterPlantActivity : AppCompatActivity() {
+/**
+ * Activity representing the flow for registering a new submission
+ */
+class RegisterSubmissionActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
     val NO_PICTURE_TEXT = "Please add an image"
     val NO_LOCATION_TEXT = "Please enable location services"
     val NO_CAMERA_TEXT = "Please enable camera"
+    val NETWORK_ERROR_TEXT = "Could not upload submission: "
     val DURATION = Toast.LENGTH_SHORT
 
     private lateinit var client: UWPlantMapClient
@@ -43,6 +47,7 @@ class RegisterPlantActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        // Get widgets
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         addImageButton = findViewById(R.id.registerAddImage)
         registerButton = findViewById(R.id.registerButton)
@@ -65,44 +70,55 @@ class RegisterPlantActivity : AppCompatActivity() {
             } else if (!locationEnabled()) {
                 Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
             } else {
+                // Fetch description and name from text boxes
                 val description = descriptionEditText.text.toString();
                 val name = nameEditText.text.toString()
-                fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location : Location? ->
+
+                // Attempt to get location asynchronously
+                fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
                         if (location == null) {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
-                            // TODO: send image to controller to be registered
+                            // Set up callback function for errors
                             val errorListener = Response.ErrorListener { error ->
+                                val errorMsg = NETWORK_ERROR_TEXT + error.networkResponse.statusCode
+                                Toast.makeText(this, errorMsg, DURATION)
                                 error.stackTrace
                             }
 
+                            // Set up callback function for a successful submission post
                             val submissionResponseListener = Response.Listener<Int> { _ ->
-                                // TODO: something more
+                                // TODO: send image to controller to be registered
                             }
 
+                            // Set up a callback function for a successful plant post
                             val plantResponseListener = Response.Listener<Int> { plantId ->
                                 client.postSubmission(plantId, location.latitude.toFloat(),
                                     location.longitude.toFloat(), System.currentTimeMillis(),
                                     "Test User", submissionResponseListener, errorListener)
                             }
 
-
                             client.postPlant(name, description, plantResponseListener, errorListener)
 
+                            // Return back to home
                             finish()
                         }
                     }
             }
         }
 
+        // get client singleton
         client = BackendClient.getInstance(RequestQueueSingleton.getInstance(this.applicationContext))
 
         cancelButton.setOnClickListener { _ ->
+            // return home
             finish()
         }
     }
 
+    /**
+     * Create a new intent for taking a picture
+     */
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
@@ -111,18 +127,28 @@ class RegisterPlantActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Callback method for when a picture is taken
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             val imageBitmap = data!!.extras!!.get("data") as Bitmap
+            // Update photo imageview and store bitmap
             plantImageView.setImageBitmap(imageBitmap)
             image = imageBitmap
         }
     }
 
+    /**
+     * @return true iff location is enabled
+     */
     private fun locationEnabled() =
         (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
 
+    /**
+     * @return true iff location is enabled
+     */
     private fun cameraEnabled() =
         packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 }

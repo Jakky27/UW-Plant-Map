@@ -9,6 +9,10 @@ import edu.uw.cs403.plantmap.models.Plant
 import edu.uw.cs403.plantmap.models.Submission
 import org.json.JSONObject
 
+/**
+ * Implementation of UWPlantMapClient that sends requests to our backend API. Implemented as a
+ * singleton.
+ */
 class BackendClient constructor(private var requestQueue: RequestQueueSingleton): UWPlantMapClient {
     companion object {
         @Volatile
@@ -21,15 +25,16 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
             }
     }
 
+    // API paths
     private val API_BASE_URL = "https://plantmap.herokuapp.com/v1/"
-    private val API_SUBMISSION_PATH = "submission"
-    private val API_PLANT_PATH = "plant"
+    private val API_SUBMISSION_PATH = API_BASE_URL + "submission"
+    private val API_PLANT_PATH = API_BASE_URL + "plant"
 
     override fun getSubmissions(listener: Response.Listener<List<Submission>>,
                                 errorListener: Response.ErrorListener) {
         val request =
             StringRequest(
-            Request.Method.GET, API_BASE_URL + API_SUBMISSION_PATH,
+            Request.Method.GET, API_SUBMISSION_PATH,
                 Response.Listener { response ->
                     val submissions: List<Submission> = ObjectMapper().readValue(response)
                     listener.onResponse(submissions)
@@ -50,7 +55,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
         entity["description"] = description
 
         val request = object:
-            StringRequest(Method.POST, API_BASE_URL + API_PLANT_PATH,
+            StringRequest(Method.POST, API_PLANT_PATH,
                 Response.Listener { response ->
                     listener.onResponse(response.toInt())
                 },
@@ -60,7 +65,6 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
                 headers["Content-Type"] = "application/json"
                 return headers
             }
-
             override fun getBody(): ByteArray {
                 return JSONObject(entity).toString().toByteArray()
             }
@@ -90,7 +94,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
         entity["posted_by"] = postedBy
 
         val request = object:
-            StringRequest(Method.POST, API_BASE_URL + API_SUBMISSION_PATH,
+            StringRequest(Method.POST, API_SUBMISSION_PATH,
                 Response.Listener { response ->
                     listener.onResponse(response.toInt())
                 },

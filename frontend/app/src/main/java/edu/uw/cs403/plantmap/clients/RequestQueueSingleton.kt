@@ -5,6 +5,10 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 
+/**
+ * Singleton request queue, supply with application context to get correct singleton.
+ * Copied from android docs.
+ */
 class RequestQueueSingleton constructor(context: Context) {
     companion object {
         @Volatile
