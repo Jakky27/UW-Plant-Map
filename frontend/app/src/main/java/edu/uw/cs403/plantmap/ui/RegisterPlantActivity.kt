@@ -10,9 +10,15 @@ import android.provider.MediaStore
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.clients.BackendClient
+import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.UWPlantMapClient
+import org.json.JSONObject
 
 class RegisterPlantActivity : AppCompatActivity() {
     val REQUEST_IMAGE_CAPTURE = 1
@@ -20,6 +26,8 @@ class RegisterPlantActivity : AppCompatActivity() {
     val NO_LOCATION_TEXT = "Please enable location services"
     val NO_CAMERA_TEXT = "Please enable camera"
     val DURATION = Toast.LENGTH_SHORT
+
+    private lateinit var client: UWPlantMapClient
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var addImageButton: ImageButton
@@ -65,11 +73,30 @@ class RegisterPlantActivity : AppCompatActivity() {
                             Toast.makeText(this, NO_LOCATION_TEXT, DURATION).show()
                         } else {
                             // TODO: send image to controller to be registered
+                            val errorListener = Response.ErrorListener { error ->
+                                error.stackTrace
+                            }
+
+                            val submissionResponseListener = Response.Listener<Int> { _ ->
+                                // TODO: something more
+                            }
+
+                            val plantResponseListener = Response.Listener<Int> { plantId ->
+                                client.postSubmission(plantId, location.latitude.toFloat(),
+                                    location.longitude.toFloat(), System.currentTimeMillis(),
+                                    "Test User", submissionResponseListener, errorListener)
+                            }
+
+
+                            client.postPlant(name, description, plantResponseListener, errorListener)
+
                             finish()
                         }
                     }
             }
         }
+
+        client = BackendClient.getInstance(RequestQueueSingleton.getInstance(this.applicationContext))
 
         cancelButton.setOnClickListener { _ ->
             finish()

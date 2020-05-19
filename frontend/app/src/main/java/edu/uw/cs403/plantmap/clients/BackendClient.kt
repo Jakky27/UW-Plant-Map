@@ -1,120 +1,116 @@
 package edu.uw.cs403.plantmap.clients
 
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import edu.uw.cs403.plantmap.BadResponseException
 import edu.uw.cs403.plantmap.models.Plant
 import edu.uw.cs403.plantmap.models.Submission
-import org.apache.http.NameValuePair
-import org.apache.http.client.HttpClient
-import org.apache.http.client.entity.UrlEncodedFormEntity
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.message.BasicNameValuePair
+import org.json.JSONObject
 
-class BackendClient(private val client: HttpClient): PlantMapClient {
-    private val MAPPER = jacksonObjectMapper()
-    private val BASE_URL = "https://plantmap.herokuapp.com/v/"
-    private val PLANT = "plant"
-    private val SUBMISSION = "submissions"
-    private val IMAGE = "image"
+class BackendClient constructor(private var requestQueue: RequestQueueSingleton): UWPlantMapClient {
+    companion object {
+        @Volatile
+        private var INSTANCE: BackendClient? = null
+        fun getInstance(requestQueue: RequestQueueSingleton) =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: BackendClient(requestQueue).also {
+                    INSTANCE = it
+                }
+            }
+    }
 
-    override fun getSubmissions(): List<Submission> {
-        val get = HttpGet(BASE_URL + SUBMISSION)
+    private val API_BASE_URL = "https://plantmap.herokuapp.com/v1/"
+    private val API_SUBMISSION_PATH = "submission"
+    private val API_PLANT_PATH = "plant"
 
-        val response = client.execute(get)
+    override fun getSubmissions(listener: Response.Listener<List<Submission>>,
+                                errorListener: Response.ErrorListener) {
+        val request =
+            StringRequest(
+            Request.Method.GET, API_BASE_URL + API_SUBMISSION_PATH,
+                Response.Listener { response ->
+                    val submissions: List<Submission> = ObjectMapper().readValue(response)
+                    listener.onResponse(submissions)
+                },
+            errorListener)
 
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue(response.entity.content)
-        }
+        requestQueue.addToRequestQueue(request)
     }
 
     override fun getPlant(plantId: Int): Plant {
-        val get = HttpGet(BASE_URL + PLANT)
-
-        val response = client.execute(get)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue(response.entity.content)
-        }
+        TODO("Not yet implemented")
     }
 
-    override fun postPlant(name: String, description: String): Int {
-        val post = HttpPost(BASE_URL + PLANT)
+    override fun postPlant(name: String, description: String, listener: Response.Listener<Int>,
+                           errorListener: Response.ErrorListener) {
+        val entity = HashMap<Any?, Any?>()
+        entity["name"] = name
+        entity["description"] = description
 
-        val params = ArrayList<NameValuePair>()
-        params.add(BasicNameValuePair("name", name))
-        params.add(BasicNameValuePair("description", description))
+        val request = object:
+            StringRequest(Method.POST, API_BASE_URL + API_PLANT_PATH,
+                Response.Listener { response ->
+                    listener.onResponse(response.toInt())
+                },
+                errorListener) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json"
+                return headers
+            }
 
-        post.entity = UrlEncodedFormEntity(params)
-
-        val response = client.execute(post)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue<ObjectNode>(response.entity.content).get("plant_id").asInt()
+            override fun getBody(): ByteArray {
+                return JSONObject(entity).toString().toByteArray()
+            }
         }
+
+        requestQueue.addToRequestQueue(request)
     }
 
     override fun getSubmission(submissionId: Int): Submission {
-        val get = HttpGet("$BASE_URL$SUBMISSION?id=$submissionId")
-
-        val response = client.execute(get)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue(response.entity.content)
-        }
+        TODO("Not yet implemented")
     }
 
-    override fun postSubmission(plantId: Int, latitude: Float, longitude: Float, postedOn: Long,
-                       postedBy: String): Int {
-        val post = HttpPost(BASE_URL + SUBMISSION)
+    override fun postSubmission(
+        plantId: Int,
+        latitude: Float,
+        longitude: Float,
+        postedOn: Long,
+        postedBy: String,
+        listener: Response.Listener<Int>,
+        errorListener: Response.ErrorListener
+    ) {
+        val entity = HashMap<Any?, Any?>()
+        entity["plant_id"] = plantId
+        entity["latitude"] = latitude
+        entity["longitude"] = longitude
+        entity["posted_on"] = postedOn
+        entity["posted_by"] = postedBy
 
-        val params = ArrayList<NameValuePair>()
-        params.add(BasicNameValuePair("plant_id", plantId.toString()))
-        params.add(BasicNameValuePair("latitude", latitude.toString()))
-        params.add(BasicNameValuePair("longitude", longitude.toString()))
-        params.add(BasicNameValuePair("posted_on", postedOn.toString()))
-        params.add(BasicNameValuePair("posted_by", postedBy))
+        val request = object:
+            StringRequest(Method.POST, API_BASE_URL + API_SUBMISSION_PATH,
+                Response.Listener { response ->
+                    listener.onResponse(response.toInt())
+                },
+                errorListener)
+        {
+            override fun getHeaders(): MutableMap<String, String>{
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json"
+                return headers
+            }
 
-        post.entity = UrlEncodedFormEntity(params)
-
-        val response = client.execute(post)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue<ObjectNode>(response.entity.content).get("sub_id").asInt()
+            override fun getBody(): ByteArray {
+                return JSONObject(entity).toString().toByteArray()
+            }
         }
+
+        requestQueue.addToRequestQueue(request)
     }
 
     override fun getImage(submissionId: Int): ByteArray {
-        val get = HttpGet("$BASE_URL$IMAGE?id=$submissionId")
-
-        val response = client.execute(get)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        } else {
-            return MAPPER.readValue(response.entity.content)
-        }
-    }
-
-    override fun postImage(submissionId: Int) {
-        val post = HttpPost("$BASE_URL$IMAGE?id=$submissionId")
-
-        val response = client.execute(post)
-
-        if (response.statusLine.statusCode != 200) {
-            throw BadResponseException("Bad response " + response.statusLine.statusCode, response)
-        }
+        TODO("Not yet implemented")
     }
 }

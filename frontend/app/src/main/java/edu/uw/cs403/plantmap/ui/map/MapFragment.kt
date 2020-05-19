@@ -9,16 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
+import edu.uw.cs403.plantmap.clients.BackendClient
+import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.UWPlantMapClient
+import edu.uw.cs403.plantmap.models.Submission
 import edu.uw.cs403.plantmap.ui.RegisterPlantActivity
 
 
@@ -27,6 +35,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         LatLngBounds(LatLng(47.647453, -122.314609), LatLng(47.662556, -122.298299))
     private val UW_COORDS = LatLng(47.656021, -122.307156)
     private val ZOOM = 15f
+
+    private lateinit var client: UWPlantMapClient
 
     private lateinit var mapViewModel: MapViewModel
 
@@ -58,6 +68,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             context!!.startActivity(Intent(context!!, RegisterPlantActivity::class.java))
         }
 
+        client =  BackendClient.getInstance(
+            RequestQueueSingleton.getInstance(this.context!!.applicationContext)
+        )
+
         return root
     }
 
@@ -69,6 +83,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        if (this::UWMap.isInitialized) {
+            loadSubmissions()
+        }
     }
 
     override fun onPause() {
@@ -98,7 +115,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun initSearchBarCallbacks() {
         // Open and closing searchbar
-        searchView.setOnQueryTextFocusChangeListener { view, b ->
+        searchView.setOnQueryTextFocusChangeListener { _, _ ->
             Log.d("DEBUG", "Focus Toggled")
         }
         //
@@ -125,13 +142,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         UWMap = googleMap
         UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
         UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
-        UWMap.uiSettings.setMyLocationButtonEnabled(false)
+        UWMap.uiSettings.isMyLocationButtonEnabled = false
 
         if (locationEnabled()) {
-            UWMap.setMyLocationEnabled(true)
+            UWMap.isMyLocationEnabled = true
         }
 
-        //TODO: Load in plant submissions
+        loadSubmissions()
+    }
+
+    private fun loadSubmissions() {
+        client.getSubmissions(
+            Response.Listener { submissions ->
+                for (submission in submissions) {
+                    val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
+                    val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
+                    UWMap.addMarker(MarkerOptions().position(latLng).title(title))
+                }
+            },
+            Response.ErrorListener { error ->
+                // TODO: something
+            }
+        )
     }
 
     private fun locationEnabled() =

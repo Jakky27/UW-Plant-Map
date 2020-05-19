@@ -18,7 +18,6 @@ public class PlantController {
         this.server = server;
     }
 
-
     public int addPlant(Request request, Response response) throws Exception {
         // ensure the body type is JSON
         if (request.contentType().equals("application/json")) {
