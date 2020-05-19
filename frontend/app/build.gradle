@@ -36,6 +36,10 @@ android {
     lintOptions {
         warning 'InvalidPackage'
     }
+    compileOptions {
+        sourceCompatibility = 14
+        targetCompatibility = 14
+    }
 
     defaultConfig {
         manifestPlaceholders = [mapsApiKey: secretProps['mapsApiKey']]
