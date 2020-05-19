@@ -36,9 +36,15 @@ android {
     lintOptions {
         warning 'InvalidPackage'
     }
+
     compileOptions {
-        sourceCompatibility = 14
-        targetCompatibility = 14
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // For Kotlin projects
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
