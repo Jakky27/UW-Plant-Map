@@ -10,6 +10,10 @@ import spark.Response;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * Handles requests from client and calls related methods from the SubmissionServer to build up responses
+ */
+
 public class SubmissionController {
 
     private SubmissionServer server;

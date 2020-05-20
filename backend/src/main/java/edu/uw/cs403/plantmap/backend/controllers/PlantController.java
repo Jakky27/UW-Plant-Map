@@ -8,6 +8,10 @@ import org.json.*;
 
 import java.util.List;
 
+/**
+ * Handles requests from client and calls related methods from the PlantServer to build up responses
+ */
+
 public class PlantController {
 
     private PlantServer server;
