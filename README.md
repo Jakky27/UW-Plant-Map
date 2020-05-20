@@ -16,7 +16,10 @@ Unfortunately the app does not yet ask you for your permission to obtain your lo
 
 ## Using the app
 
-To view the plants map, go to the “Map” section on the bottom navigation. To search for a specific plant species, tap on the search bar icon and type for the plant species, then tap on the desired autocomplete popup. To view the live submissions feed, tap on the “Feed” section on the bottom navigation. To view the settings, tap on the “Settings” section on the bottom navigation.
+- To view the plants map, go to the “Map” section on the bottom navigation. 
+- To search for a specific plant species, tap on the search bar icon and type for the plant species, then tap on the desired autocomplete popup. 
+- To view the live submissions feed, tap on the “Feed” section on the bottom navigation. 
+- To view the settings, tap on the “Settings” section on the bottom navigation.
 
 ## Missing functionality
 
