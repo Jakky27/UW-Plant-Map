@@ -18,8 +18,8 @@ public class ImageController {
             // parse submission id from URL
             int sub_id = Integer.parseInt(request.params("id"));
             server.updateSubmission(sub_id, request.bodyAsBytes());
-            response.type("text/html");
-            return "Successfully upload image";
+            response.type("text/plain");
+            return sub_id;
         } catch (Exception e){
             return "Invalid submission id: " + e.getMessage();
         }
