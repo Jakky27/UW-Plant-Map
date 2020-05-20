@@ -109,3 +109,7 @@ This project uses JUnit for testing. For the backend, please add the new test co
 ## Releasing a new version
 
 To tag a commit for release, go to the Releases tab of our GitHub repo and select 'Draft a new release.' From there use `v<major>.<minor>` as the tag version and `Release <major>.<minor>` as the release title. You will also need to upload the commit's generated APK file from the frontend workflow artifacts, and all the JAR files from the backend workflow artifacts, both of which can be obtained for the current commit on out C/I. Make sure to describe all the new features and known bugs in the release description.
+
+## Coding guidelines
+
+In our project we use Google's style guidelines for [Kotlin](https://developer.android.com/kotlin/style-guide) and [Java](https://google.github.io/styleguide/javaguide.html). Make sure to abide by them.
