@@ -25,6 +25,8 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
             }
     }
 
+    private val MAPPER = ObjectMapper()
+
     // API paths
     private val API_BASE_URL = "https://plantmap.herokuapp.com/v1/"
     private val API_SUBMISSION_PATH = API_BASE_URL + "submission"
@@ -36,7 +38,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
             StringRequest(
             Request.Method.GET, API_SUBMISSION_PATH,
                 Response.Listener { response ->
-                    val submissions: List<Submission> = ObjectMapper().readValue(response)
+                    val submissions: List<Submission> = MAPPER.readValue(response)
                     listener.onResponse(submissions)
                 },
             errorListener)
@@ -50,9 +52,9 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
 
     override fun postPlant(name: String, description: String, listener: Response.Listener<Int>,
                            errorListener: Response.ErrorListener) {
-        val entity = HashMap<Any?, Any?>()
-        entity["name"] = name
-        entity["description"] = description
+        val entity = JSONObject()
+        entity.put("name", name)
+        entity.put("description", description)
 
         val request = object:
             StringRequest(Method.POST, API_PLANT_PATH,
@@ -66,7 +68,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
                 return headers
             }
             override fun getBody(): ByteArray {
-                return JSONObject(entity).toString().toByteArray()
+                return entity.toString().toByteArray()
             }
         }
 
@@ -86,12 +88,12 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
         listener: Response.Listener<Int>,
         errorListener: Response.ErrorListener
     ) {
-        val entity = HashMap<Any?, Any?>()
-        entity["plant_id"] = plantId
-        entity["latitude"] = latitude
-        entity["longitude"] = longitude
-        entity["posted_on"] = postedOn
-        entity["posted_by"] = postedBy
+        val entity = JSONObject()
+        entity.put("plant_id", plantId)
+        entity.put("latitude", latitude)
+        entity.put("longitude", longitude)
+        entity.put("posted_on", postedOn)
+        entity.put("posted_by", postedBy)
 
         val request = object:
             StringRequest(Method.POST, API_SUBMISSION_PATH,
@@ -107,7 +109,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
             }
 
             override fun getBody(): ByteArray {
-                return JSONObject(entity).toString().toByteArray()
+                return entity.toString().toByteArray()
             }
         }
 
