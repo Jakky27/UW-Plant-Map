@@ -21,6 +21,11 @@ public interface SubmissionServer {
      */
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception;
 
+    /*
+     * Create submission with images
+     */
+    public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude, byte[] image) throws Exception;
+
     /**
      * Deletes post with given id from the database
      *
@@ -46,4 +51,9 @@ public interface SubmissionServer {
      * @throws SQLException if there is an error when executing SQL statements
      */
     public List<Submission> getAllSubmission() throws Exception;
+
+    /*
+     * Update submissions allows add or remove images in a post
+     */
+    public int updateSubmission(int post_id, byte[] image) throws Exception;
 }

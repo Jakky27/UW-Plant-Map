@@ -16,9 +16,11 @@ public class SubmissionServerImp implements SubmissionServer {
 
     // SQL statements
     private static final String STATEMENT_INSERT = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
+    private static final String STATEMENT_INSERT_WITH_IMAGE = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude, img) VALUES (?, ?, ?, ?, ?, ?);";
     private static final String STATEMENT_READ = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?";
     private static final String STATEMENT_GETALL = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
+    private static final String STATEMENT_UPDATE = "UPDATE submission SET img = ? WHERE post_id = ?";
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
@@ -33,6 +35,38 @@ public class SubmissionServerImp implements SubmissionServer {
             preparedStatement.setInt(3,plant_id);
             preparedStatement.setFloat(4, longitude);
             preparedStatement.setFloat(5,latitude);
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()){
+                return rs.getInt(1);
+            }else{
+                return 0;
+            }
+
+        } catch (SQLException e){
+            throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
+        }
+    }
+
+    @Override
+    public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude, byte[] image) throws Exception {
+        Connection conn = null;
+
+        try {
+            conn = pool.getConnection();
+
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_INSERT_WITH_IMAGE, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1,posted_by);
+            preparedStatement.setLong(2,post_date);
+            preparedStatement.setInt(3,plant_id);
+            preparedStatement.setFloat(4, longitude);
+            preparedStatement.setFloat(5,latitude);
+            preparedStatement.setBytes(6, image);
             preparedStatement.executeUpdate();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -137,6 +171,30 @@ public class SubmissionServerImp implements SubmissionServer {
             }
 
             return postList;
+
+        } catch (SQLException  e){
+            throw new SQLException("Encountered an error when executing given sql statement.", e);
+        } finally {
+            if (conn != null) {
+                pool.returnConnection(conn);
+            }
+        }
+    }
+
+    @Override
+    public int updateSubmission(int post_id, byte[] image) throws Exception {
+        Connection conn = null;
+
+        try {
+            conn = pool.getConnection();
+
+            // run SQL
+            PreparedStatement preparedStatement = conn.prepareStatement(STATEMENT_UPDATE);
+            preparedStatement.setBytes(1, image);
+            preparedStatement.setInt(2,post_id);
+            preparedStatement.executeUpdate();
+
+           return post_id;
 
         } catch (SQLException  e){
             throw new SQLException("Encountered an error when executing given sql statement.", e);

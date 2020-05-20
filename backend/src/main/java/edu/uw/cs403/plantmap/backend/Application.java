@@ -1,5 +1,6 @@
 package edu.uw.cs403.plantmap.backend;
 
+import edu.uw.cs403.plantmap.backend.controllers.ImageController;
 import edu.uw.cs403.plantmap.backend.controllers.PlantController;
 import edu.uw.cs403.plantmap.backend.controllers.SubmissionController;
 import edu.uw.cs403.plantmap.backend.models.PlantServerImp;
@@ -37,6 +38,12 @@ public class Application {
         get("/v1/submission/:id",subCtr::getPost);
         delete("/v1/submission/:id", subCtr::deletePost);
         get("/v1/submission", subCtr::getAllPost);
+
+        // Image controller
+        ImageController imgCtr = new ImageController(new SubmissionServerImp(pool));
+
+        get("/v1/image", imgCtr::getImg);
+        post("/v1/image", imgCtr::uploadImg);
 
         exception(Exception.class, (exception, request, response) -> {
             StringWriter sw = new StringWriter();
