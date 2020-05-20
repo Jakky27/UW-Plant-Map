@@ -14,6 +14,11 @@ public interface SubmissionServer {
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception;
 
     /*
+     * Create submission with images
+     */
+    public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude, byte[] image) throws Exception;
+
+    /*
      * DeleteSubmission deletes a post
      */
     public int deleteSubmission(int post_id) throws Exception;

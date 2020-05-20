@@ -23,6 +23,20 @@ public class SubmissionServerTest implements SubmissionServer{
     }
 
     @Override
+    public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude, byte[] image) throws Exception {
+        Submission sub = new Submission();
+        sub.setPost_id(++index);
+        sub.setPosted_by(posted_by);
+        sub.setPost_date(post_date);
+        sub.setPost_id(plant_id);
+        sub.setLongitude(longitude);
+        sub.setLatitude(latitude);
+        sub.setImg(image);
+        map.put(index, sub);
+        return index;
+    }
+
+    @Override
     public int deleteSubmission(int post_id) throws Exception {
         if (!map.containsKey(post_id)) {
             throw new Exception("Post not exist");
