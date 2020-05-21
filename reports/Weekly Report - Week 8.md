@@ -42,7 +42,8 @@ ________________
 
 
 **Jacky**
-* 
+* Wrote documentation for live feed frontend
+* Had struggles with building the project on my computers
 
 
 **Kouroche**
