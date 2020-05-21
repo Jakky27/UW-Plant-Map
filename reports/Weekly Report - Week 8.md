@@ -49,4 +49,8 @@ ________________
 
 
 **Kouroche**
-* 
+* Wrote technical documentation for installing both the server and the app, and contributing to the project
+* Fixed a critical bug in the server causing it to lose connection to the database by implementing SQL connection pooling
+* Made the C/I better (less failed builds, less useless deploys)
+* Cleaned up some of the backend code
+* Implemented a system for us to store team secrets securely without ever risking to deploy them (`secrets.gradle`)
