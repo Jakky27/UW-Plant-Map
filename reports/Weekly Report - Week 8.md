@@ -32,7 +32,9 @@ ________________
 
 
 **Daniel**
-* 
+* Commented code on front-end
+* Wrote unit tests for front-end client and manual tests
+* Refactored existing networking code on the front-end into client classes
 
 
 **Huan**
