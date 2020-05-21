@@ -26,7 +26,9 @@ ________________
 
 ## Contributions of individual team members.
 **Brian**
-* 
+* Commented all of the server interfaces and controllers
+* Implemented JUnit testing for backend server and database connection.
+* Next week I hope to have JUnit tests that are more modular and use the testing server implementation.
 
 
 **Daniel**
