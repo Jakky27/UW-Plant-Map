@@ -88,14 +88,14 @@ class RegisterSubmissionActivity : AppCompatActivity() {
 
                             // Set up callback function for a successful submission post
                             val submissionResponseListener = Response.Listener<Int> { _ ->
-                                // TODO: send image to controller to be registered
                             }
 
                             // Set up a callback function for a successful plant post
                             val plantResponseListener = Response.Listener<Int> { plantId ->
                                 client.postSubmission(plantId, location.latitude.toFloat(),
                                     location.longitude.toFloat(), System.currentTimeMillis(),
-                                    "Test User", submissionResponseListener, errorListener)
+                                    "Test User", image, submissionResponseListener,
+                                    errorListener)
                             }
 
                             client.postPlant(name, description, plantResponseListener, errorListener)
