@@ -18,26 +18,16 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.*
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import edu.uw.cs403.plantmap.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import kotlin.math.log
-
-private var TEMP_IMAGES_URL = arrayOf(
-    "https://i.imgur.com/NoXtk.jpg",
-    "https://i.imgur.com/QRn0O0E.jpg",
-    "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/close-up-of-flower-blooming-outdoors-royalty-free-image-739387273-1544039749.jpg",
-    "https://i.imgur.com/s9f9abx.jpg",
-    "https://i.imgur.com/QfDGakI.jpg",
-    "https://i.imgur.com/R2l26fI.jpg",
-    "https://i.imgur.com/WbhUbh7.png",
-    "https://i.imgur.com/LvxYIvQb.jpg",
-    "https://i.imgur.com/knGlNmyb.jpg",
-    "https://i.imgur.com/H18lXnKb.jpg"
-)
-
+import edu.uw.cs403.plantmap.clients.BackendClient
+import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
+import edu.uw.cs403.plantmap.clients.UWPlantMapClient
 
 class FeedFragment : Fragment() {
 
@@ -47,6 +37,9 @@ class FeedFragment : Fragment() {
 
     private lateinit var posts: ArrayList<Post>
 
+    private lateinit var client: UWPlantMapClient
+
+    private var postCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +55,10 @@ class FeedFragment : Fragment() {
         queue = Volley.newRequestQueue(this.context)
         updatePostsList()
 
+        client = BackendClient.getInstance(
+            RequestQueueSingleton.getInstance(this.context!!.applicationContext)
+        )
+
         postsView.layoutManager = LinearLayoutManager(this.context)
         postsView.adapter = PostAdapter(posts, this.context!!)
 
@@ -69,21 +66,20 @@ class FeedFragment : Fragment() {
     }
 
 
+
     /**
      * Populates the live feed with the most recent posts from the app's server
      *
      */
     private fun updatePostsList() {
-        // TODO communicate with server here
-
         val url = "https://plantmap.herokuapp.com/v1/submission"
         val descriptionURL = "https://plantmap.herokuapp.com/v1/plant/"
         val imgURL = "https://plantmap.herokuapp.com/v1/image/"
 
+        postCount = 0
 
         val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, url, null,
             Response.Listener { response ->
-                // TODO: Update flowers here
 
                 Log.d("DEBUG", response.length().toString())
 
@@ -93,8 +89,7 @@ class FeedFragment : Fragment() {
                     val subID = res.getString("post_id")
                     val date = res.getLong("post_date")
 
-                    //Log.d("DEBUG", "image url: $imgURL$subID")
-                    //Log.d("DEBUG", "description url: $descriptionURL$subID")
+                    val length = response.length()
 
                     val descriptionObjectRequest = JsonObjectRequest(Request.Method.GET, descriptionURL + subID, null,
                         Response.Listener { response ->
@@ -102,17 +97,22 @@ class FeedFragment : Fragment() {
                             val plantName = response.getString("name")
                             val plantDescription = response.getString("description")
 
-                            //Log.d("DEBUG", "Plant Name: $plantName")
-
                             posts.add(Post(plantName, imgURL + subID, plantDescription, Date(date)))
-                            postsView.adapter!!.notifyDataSetChanged()
+                            posts.sortByDescending { it.date }
+
+                            postCount++
+
+                            if (postCount == length) {
+                                postsView.adapter!!.notifyDataSetChanged()
+                            }
+
 
                         }, Response.ErrorListener { error ->
                             Log.d("DEBUG", "Description Handle error")
-                            Log.d("DEBUG", error.message)
+                            //Log.d("DEBUG", error.message)
                         }
                     )
-                    queue.add(descriptionObjectRequest) // automatically requests
+                    queue.add(descriptionObjectRequest)
                 }
             },
             Response.ErrorListener { error ->
@@ -126,7 +126,7 @@ class FeedFragment : Fragment() {
 
 
 
-private data class Post(val plantName: String, val photo: String, val description: String, val date: Date)
+public data class Post(val plantName: String, val photo: String, val description: String, val date: Date)
 
 private class PostAdapter(val posts: ArrayList<Post>, val context: Context) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
@@ -145,6 +145,7 @@ private class PostAdapter(val posts: ArrayList<Post>, val context: Context) : Re
         Picasso.get()
             .load(posts[position].photo)
             .into(holder.postPhoto)
+
 
         holder.postDate.text = String.format("%tc", posts[position].date);
     }

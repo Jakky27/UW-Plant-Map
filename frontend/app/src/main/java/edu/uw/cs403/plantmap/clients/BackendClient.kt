@@ -10,8 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.uw.cs403.plantmap.models.Plant
 import edu.uw.cs403.plantmap.models.Submission
+import edu.uw.cs403.plantmap.ui.feed.Post
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Implementation of UWPlantMapClient that sends requests to our backend API. Implemented as a
