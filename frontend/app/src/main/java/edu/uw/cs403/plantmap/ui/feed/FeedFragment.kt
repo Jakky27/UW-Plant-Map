@@ -93,8 +93,8 @@ class FeedFragment : Fragment() {
                     val subID = res.getString("post_id")
                     val date = res.getLong("post_date")
 
-                    Log.d("DEBUG", "image url: $imgURL$subID")
-                    Log.d("DEBUG", "description url: $descriptionURL$subID")
+                    //Log.d("DEBUG", "image url: $imgURL$subID")
+                    //Log.d("DEBUG", "description url: $descriptionURL$subID")
 
                     val descriptionObjectRequest = JsonObjectRequest(Request.Method.GET, descriptionURL + subID, null,
                         Response.Listener { response ->
@@ -102,9 +102,9 @@ class FeedFragment : Fragment() {
                             val plantName = response.getString("name")
                             val plantDescription = response.getString("description")
 
-                            Log.d("DEBUG", "Plant Name: $plantName")
+                            //Log.d("DEBUG", "Plant Name: $plantName")
 
-                            posts.add(Post(imgURL + subID, plantDescription, Date(date)))
+                            posts.add(Post(plantName, imgURL + subID, plantDescription, Date(date)))
                             postsView.adapter!!.notifyDataSetChanged()
 
                         }, Response.ErrorListener { error ->
@@ -126,7 +126,7 @@ class FeedFragment : Fragment() {
 
 
 
-private data class Post(val photo: String, val description: String, val date: Date)
+private data class Post(val plantName: String, val photo: String, val description: String, val date: Date)
 
 private class PostAdapter(val posts: ArrayList<Post>, val context: Context) : RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
@@ -137,6 +137,9 @@ private class PostAdapter(val posts: ArrayList<Post>, val context: Context) : Re
     override fun getItemCount() = posts.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        holder.plantName.text = posts[position].plantName
+
         holder.description.text = posts[position].description
 
         Picasso.get()
@@ -147,6 +150,7 @@ private class PostAdapter(val posts: ArrayList<Post>, val context: Context) : Re
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val plantName: TextView = itemView.findViewById((R.id.postTitle))
         val description: TextView = itemView.findViewById(R.id.postDescription)
         val postPhoto: ImageView = itemView.findViewById(R.id.postImage)
         val postDate: TextView = itemView.findViewById(R.id.dateText)
