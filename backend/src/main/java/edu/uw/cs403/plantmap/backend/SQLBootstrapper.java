@@ -12,7 +12,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class SQLBootstrapper {
-    private static final Set<String> REQUIRED_TABLES = null;
+    private static final Set<String> REQUIRED_TABLES = Set.of("plant", "submission");
 
     private SQLConnectionPool pool;
 
@@ -36,6 +36,7 @@ public class SQLBootstrapper {
                     "         table_name;");
 
             Set<String> tables = resultsToTableSet(getTablesStatement.executeQuery());
+            System.out.println("Tables found: " + tables);
 
             if (tables.equals(REQUIRED_TABLES))
                 System.out.println("No database bootstrapping needed.");
