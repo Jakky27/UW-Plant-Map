@@ -54,7 +54,7 @@ public class SubmissionServerTest implements SubmissionServer{
     }
 
     @Override
-    public List<Submission> getAllSubmission() throws Exception {
+    public List<Submission> getAllSubmission(int thresh) throws Exception {
         return new ArrayList<>(map.values());
     }
 
