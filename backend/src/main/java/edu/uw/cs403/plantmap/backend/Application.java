@@ -42,8 +42,8 @@ public class Application {
         // Image controller
         ImageController imgCtr = new ImageController(new SubmissionServerImp(pool));
 
-        get("/v1/image", imgCtr::getImg);
-        post("/v1/image", imgCtr::uploadImg);
+        get("/v1/image/:id", imgCtr::getImg);
+        post("/v1/image/:id", imgCtr::uploadImg);
 
         exception(Exception.class, (exception, request, response) -> {
             StringWriter sw = new StringWriter();

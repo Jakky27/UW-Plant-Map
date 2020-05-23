@@ -56,4 +56,6 @@ public interface SubmissionServer {
      * Update submissions allows add or remove images in a post
      */
     public int updateSubmission(int post_id, byte[] image) throws Exception;
+
+    byte[] getSubmissionImage(int post_id) throws Exception;
 }

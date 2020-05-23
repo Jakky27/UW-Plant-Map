@@ -15,17 +15,16 @@ public class ImageController {
 
     public Object uploadImg(Request request, Response response) throws Exception {
         // parse submission id from URL
-        int sub_id = Integer.parseInt(request.params("id"));
+        int sub_id = Integer.parseInt(request.params(":id"));
         server.updateSubmission(sub_id, request.bodyAsBytes());
         response.type("text/plain");
         return sub_id;
     }
 
     public Object getImg(Request request, Response response) throws Exception {
-        int sub_id = Integer.parseInt(request.params("id"));
-        Submission sub = server.getSubmission(sub_id);
+        int sub_id = Integer.parseInt(request.params(":id"));
         response.type("application/octet-stream");
-        return sub.getImg();
+        return server.getSubmissionImage(sub_id);
     }
 
 }

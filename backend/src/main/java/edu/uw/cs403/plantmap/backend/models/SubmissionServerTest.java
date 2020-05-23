@@ -66,4 +66,9 @@ public class SubmissionServerTest implements SubmissionServer{
         map.get(post_id).setImg(image);
         return post_id;
     }
+
+    @Override
+    public byte[] getSubmissionImage(int post_id) throws Exception {
+        return map.get(post_id).getImg();
+    }
 }
