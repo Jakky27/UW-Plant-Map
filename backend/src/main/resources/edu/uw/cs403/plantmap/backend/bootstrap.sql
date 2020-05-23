@@ -11,5 +11,6 @@ CREATE TABLE submission (
     longitude FLOAT,
     posted_by VARCHAR(30),
     post_date BIGINT,
-    img VARBINARY
+    img VARBINARY(max),
+    reported INT
 );
