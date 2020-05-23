@@ -1,5 +1,6 @@
 package edu.uw.cs403.plantmap.clients
 
+import android.graphics.Bitmap
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -82,10 +83,11 @@ class BackendClientTest {
         val longitude = 3f
         val postedOn = 5L
         val postedBy = "Test User"
+        val image = mock<Bitmap>()
 
         val listener = mock<Response.Listener<Int>>()
 
-        backendClient.postSubmission(plantId, latitude, longitude, postedOn, postedBy, listener,
+        backendClient.postSubmission(plantId, latitude, longitude, postedOn, postedBy, image, listener,
             mockErrorListener)
 
         verify(mockRequestQueueSingleton).addToRequestQueue(requestCaptor.capture())
