@@ -38,7 +38,7 @@ public class Application {
         get("/v1/submission/:id",subCtr::getPost);
         delete("/v1/submission/:id", subCtr::deletePost);
         get("/v1/submission", subCtr::getAllPost);
-        post("/v1/submission/:id", subCtr::reportPost);
+        post("/v1/submission/:id/report", subCtr::reportPost);
 
         // Image controller
         ImageController imgCtr = new ImageController(new SubmissionServerImp(pool));
