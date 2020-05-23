@@ -7,4 +7,6 @@
     <string name="register_description_default_text">Plant description (optional)</string>
     <string name="register_plant_name_default_text">Plant Name</string>
     <string name="cancel_text">Cancel</string>
+    <string name="back_text">Back</string>
+    <string name="submission_posted_by_text">Posted by %1$s on %2$s</string>
 </resources>

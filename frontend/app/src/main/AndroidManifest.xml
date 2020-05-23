@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.RegisterSubmissionActivity" />
+        <activity android:name=".ui.ViewSubmissionActivity" />
     </application>
 
     <uses-feature android:name="android.hardware.camera" android:required="false"/>

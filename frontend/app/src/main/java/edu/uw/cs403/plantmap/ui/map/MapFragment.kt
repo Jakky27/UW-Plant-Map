@@ -16,6 +16,7 @@ import com.android.volley.Response
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.uw.cs403.plantmap.R
@@ -23,6 +24,7 @@ import edu.uw.cs403.plantmap.clients.BackendClient
 import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
 import edu.uw.cs403.plantmap.clients.UWPlantMapClient
 import edu.uw.cs403.plantmap.ui.RegisterSubmissionActivity
+import edu.uw.cs403.plantmap.ui.ViewSubmissionActivity
 
 /**
  * Fragment that represents the main page of the app. This contains the map (with plant locations),
@@ -35,6 +37,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     // Coordinates to center map camera at
     private val UW_COORDS = LatLng(47.656021, -122.307156)
     private val ZOOM = 15f
+
+    private val markers = HashMap<Marker, Int>()
 
     private lateinit var client: UWPlantMapClient
 
@@ -148,6 +152,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             UWMap.isMyLocationEnabled = true
         }
 
+        // setup listener
+        UWMap.setOnMarkerClickListener { marker ->
+            if (markers.containsKey(marker)) {
+                val intent = Intent(context!!, ViewSubmissionActivity::class.java)
+                intent.putExtra("submissionId", markers[marker])
+                startActivity(intent)
+
+                true
+            } else {
+                false
+            }
+        }
+
         loadSubmissions()
     }
 
@@ -155,12 +172,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
      * Sends a request for submissions, and presents them on the map if a response is recieved
      */
     private fun loadSubmissions() {
+        markers.clear()
         client.getSubmissions(
             Response.Listener { submissions ->
                 for (submission in submissions) {
                     val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
                     val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
-                    UWMap.addMarker(MarkerOptions().position(latLng).title(title))
+
+                    markers[UWMap.addMarker(MarkerOptions().position(latLng).title(title))] = submission.post_id!!
                 }
             },
             Response.ErrorListener { error ->
