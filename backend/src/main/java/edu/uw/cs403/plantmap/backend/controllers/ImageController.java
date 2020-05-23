@@ -21,7 +21,7 @@ public class ImageController {
             response.type("text/plain");
             return sub_id;
         } catch (Exception e){
-            return "Invalid submission id: " + e.getMessage();
+            throw new RuntimeException("Failed to store image");
         }
 
     }
@@ -33,7 +33,7 @@ public class ImageController {
             response.type("application/octet-stream");
             return sub.getImg();
         } catch (Exception e) {
-            return "Invalid submission id: " + e.getMessage();
+            throw new RuntimeException("Failed to get image");
         }
     }
 
