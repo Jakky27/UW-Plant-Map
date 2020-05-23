@@ -15,8 +15,8 @@ public class SubmissionServerImp implements SubmissionServer {
     }
 
     // SQL statements
-    private static final String STATEMENT_INSERT = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude) VALUES (?, ?, ?, ?, ?);";
-    private static final String STATEMENT_INSERT_WITH_IMAGE = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude, img) VALUES (?, ?, ?, ?, ?, ?);";
+    private static final String STATEMENT_INSERT = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude, reported) VALUES (?, ?, ?, ?, ?, 0);";
+    private static final String STATEMENT_INSERT_WITH_IMAGE = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude, img, repoted) VALUES (?, ?, ?, ?, ?, ?, 0);";
     private static final String STATEMENT_READ = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_READIMG = "SELECT img FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?;";
