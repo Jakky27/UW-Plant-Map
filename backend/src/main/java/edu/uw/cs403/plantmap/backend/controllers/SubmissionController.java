@@ -53,7 +53,12 @@ public class SubmissionController {
     }
 
     public Object getAllPost(Request request, Response response) throws Exception {
-        List<Submission> list = server.getAllSubmission();
+        String threshS = request.queryParams("reported");
+        int thresh = 100;
+        if (threshS != null && !threshS.isEmpty()) {
+            thresh = Integer.parseInt(threshS);
+        }
+        List<Submission> list = server.getAllSubmission(thresh);
 
         response.type("application/json");
         return new JSONArray(list);

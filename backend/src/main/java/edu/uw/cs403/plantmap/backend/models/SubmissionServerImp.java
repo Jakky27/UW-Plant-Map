@@ -19,9 +19,8 @@ public class SubmissionServerImp implements SubmissionServer {
     private static final String STATEMENT_INSERT_WITH_IMAGE = "INSERT INTO submission (posted_by, post_date, plant_id, longitude, latitude, img) VALUES (?, ?, ?, ?, ?, ?);";
     private static final String STATEMENT_READ = "SELECT posted_by, post_date, plant_id, longitude, latitude FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_READIMG = "SELECT img FROM submission WHERE post_id = ?;";
-    private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?";
-    private static final String STATEMENT_GETALL = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission";
-    private static final String STATEMENT_UPDATE = "UPDATE submission SET img = ? WHERE post_id = ?";
+    private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?;";
+    private static final String STATEMENT_UPDATE = "UPDATE submission SET img = ? WHERE post_id = ?;";
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
@@ -145,8 +144,9 @@ public class SubmissionServerImp implements SubmissionServer {
     }
 
     @Override
-    public List<Submission> getAllSubmission() throws Exception {
+    public List<Submission> getAllSubmission(int thresh) throws Exception {
         Connection conn = null;
+        String STATEMENT_GETALL = "SELECT posted_by, post_date, plant_id, longitude, latitude, post_id FROM submission WHERE reported < " + thresh + ";";
 
         try {
             conn = pool.getConnection();

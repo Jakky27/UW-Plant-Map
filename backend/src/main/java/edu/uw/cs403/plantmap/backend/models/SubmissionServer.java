@@ -47,10 +47,12 @@ public interface SubmissionServer {
     /**
      * returns a list of all of the valid submissions to fill the user feed
      *
+     * @param  thresh       specifies the highest number of reports deemed acceptable for a submission to
+     *                      be included.
      * @return              list of all of the submissions to be returned
      * @throws SQLException if there is an error when executing SQL statements
      */
-    public List<Submission> getAllSubmission() throws Exception;
+    public List<Submission> getAllSubmission(int thresh) throws Exception;
 
     /*
      * Update submissions allows add or remove images in a post
