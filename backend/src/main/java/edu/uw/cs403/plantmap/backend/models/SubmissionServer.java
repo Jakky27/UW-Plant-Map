@@ -21,8 +21,17 @@ public interface SubmissionServer {
      */
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception;
 
-    /*
-     * Create submission with images
+    /**
+     * Creates a new submission in the database based on the given information and image
+     *
+     * @param posted_by name of user who posted submission
+     * @param post_date date of post
+     * @param plant_id  foreign key of plant in the database
+     * @param longitude longitude of location as a float
+     * @param latitude  latitude of location as a float
+     * @param image     image of plant
+     * @return          on success, returns primary key of new submission, else 0
+     * @throws SQLException if there is an error when executing SQL statements
      */
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude, byte[] image) throws Exception;
 
@@ -54,10 +63,31 @@ public interface SubmissionServer {
      */
     public List<Submission> getAllSubmission(int thresh) throws Exception;
 
-    /*
-     * Update submissions allows add or remove images in a post
+    /**
+     * updates the image of a submission
+     *
+     * @param post_id       id of submission
+     * @param image         image to be added
+     * @return              post_id of updated submission, else throws
+     * @throws SQLException if there is an error when executing SQL statements
      */
     public int updateSubmission(int post_id, byte[] image) throws Exception;
 
-    byte[] getSubmissionImage(int post_id) throws Exception;
+    /**
+     * retrieves the byte array of the given post.
+     *
+     * @param post_id       submission id of post containing image
+     * @return              image of given submission
+     * @throws SQLException if there is an error when executing SQL statements
+     */
+    public byte[] getSubmissionImage(int post_id) throws Exception;
+
+    /**
+     * reports the given submission
+     *
+     * @param post_id       submission id of reported submission.
+     * @return              post_id on update success, else throws
+     * @throws SQLException if there is an error when executing SQL statements
+     */
+    public int reportSubmission(int post_id) throws Exception;
 }
