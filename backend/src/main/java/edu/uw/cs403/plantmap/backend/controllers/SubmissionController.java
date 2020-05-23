@@ -69,4 +69,10 @@ public class SubmissionController {
         return server.deleteSubmission(pid);
     }
 
+    public Object reportPost(Request request, Response response) throws Exception {
+        int pid = Integer.parseInt(request.params(":id"));
+        return server.reportSubmission(pid);
+    }
+
+
 }

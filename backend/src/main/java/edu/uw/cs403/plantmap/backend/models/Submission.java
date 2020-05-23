@@ -13,9 +13,10 @@ public class Submission {
     private String posted_by;
     private long post_date;
     private int plant_id;
-    private byte[] img; // Need further check
+    private byte[] img;
     private float longitude;
     private float latitude;
+    private int reported;
 
 }
 
