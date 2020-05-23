@@ -6,64 +6,53 @@ import java.util.List;
 
 public class PlantServerTest implements PlantServer{
 
-    private List<Plant> store = new ArrayList<>();
-    private HashMap<String, Plant> map = new HashMap<>();
+    private HashMap<Integer, Plant> map = new HashMap<>();
+    int index = 0;
 
     @Override
     public int registerPlant(String name, String description) throws Exception {
-        int id = store.size()+1;
+
         Plant p = new Plant();
-        p.setPlant_id(id);
+        p.setPlant_id(++index);
         p.setName(name);
         p.setDescription(description);
-        store.add(p);
-        map.put(name, p);
+        map.put(index, p);
 //        String output = String.format("register success!\n Plant name %s \n Description: %s\n", name, description);
 //        System.out.println(output);
-        return id;
+        return index;
     }
 
     @Override
     public Plant getPlantById(int plant_id) throws Exception {
-        if (store.size() <= plant_id - 1) return null;
-        return store.get(plant_id-1);
+        if (!map.containsKey(plant_id)) return null;
+        return map.get(plant_id);
     }
 
     @Override
     public Plant getPlantByName(String name) throws Exception {
-        if (!map.containsKey(name)){
-            return null;
-        } else{
-            return map.get(name);
-        }
+        return null;
     }
 
     @Override
     public int updatePlant(int id, String name, String description) throws Exception {
-        if (id-1 >= store.size()) {
-            return 0;
-        }
-        map.remove(name);
-        Plant p = store.get(id - 1);
+        if (!map.containsKey(id)) return 0;
+        Plant p = map.get(id);
         p.setName(name);
         p.setDescription(description);
-        map.put(name, p);
         return id;
     }
 
     @Override
     public int deletePlant(int plant_id) throws Exception {
-        if (plant_id-1 >= store.size()) {
-            return 0;
-        }else{
-            store.remove(plant_id -1 );
-            return plant_id;
-        }
+        if (!map.containsKey(plant_id)) return 0;
+        map.remove(plant_id);
+        return plant_id;
     }
 
     @Override
     public List<Plant> getAllPlants() throws Exception {
 
-        return store;
+        return new ArrayList<Plant>(map.values());
     }
+
 }
