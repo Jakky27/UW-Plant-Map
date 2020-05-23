@@ -23,7 +23,7 @@ public class ImageController {
 
     public Object getImg(Request request, Response response) throws Exception {
         int sub_id = Integer.parseInt(request.params(":id"));
-        response.type("application/octet-stream");
+        response.type("image/jpeg");
         return server.getSubmissionImage(sub_id);
     }
 
