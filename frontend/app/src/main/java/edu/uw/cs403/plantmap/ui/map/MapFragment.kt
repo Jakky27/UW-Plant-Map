@@ -87,9 +87,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        if (this::UWMap.isInitialized) {
-            loadSubmissions()
-        }
     }
 
     override fun onPause() {
@@ -154,14 +151,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         // setup listener
         UWMap.setOnMarkerClickListener { marker ->
-            if (markers.containsKey(marker)) {
+            if (!markers.containsKey(marker)) {
+                //TODO: handle
+                false
+            } else {
                 val intent = Intent(context!!, ViewSubmissionActivity::class.java)
                 intent.putExtra("submissionId", markers[marker])
                 startActivity(intent)
 
                 true
-            } else {
-                false
             }
         }
 
@@ -169,17 +167,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     /**
-     * Sends a request for submissions, and presents them on the map if a response is recieved
+     * Sends a request for submissions, and presents them on the map if a response is received
      */
     private fun loadSubmissions() {
+        for ((marker, _) in markers) {
+            marker.remove()
+        }
+
         markers.clear()
+
         client.getSubmissions(
             Response.Listener { submissions ->
                 for (submission in submissions) {
                     val latLng = LatLng(submission.latitude!!.toDouble(), submission.longitude!!.toDouble())
-                    val title = "Submission posted by " + submission.posted_by + " on " + submission.post_date
 
-                    markers[UWMap.addMarker(MarkerOptions().position(latLng).title(title))] = submission.post_id!!
+                    markers[UWMap.addMarker(MarkerOptions().position(latLng))] = submission.post_id!!
                 }
             },
             Response.ErrorListener { error ->

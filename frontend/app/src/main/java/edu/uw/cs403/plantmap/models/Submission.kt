@@ -10,4 +10,5 @@ class Submission {
     val longitude: Float? = null
     val post_date: Long? = null
     val posted_by: String? = null
+    val reported: Int? = null
 }
