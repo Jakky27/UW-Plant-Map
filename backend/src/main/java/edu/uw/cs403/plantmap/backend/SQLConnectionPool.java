@@ -96,6 +96,23 @@ public class SQLConnectionPool {
         freePool.push(conn);
     }
 
+    public synchronized void returnConnectionSafe(Connection conn) {
+        try {
+            returnConnection(conn);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            reset();
+        }
+    }
+
+    public synchronized void reset()
+    {
+        // Empty the pool so new connections are made
+        freePool.clear();
+        occupiedPool.clear();
+        connNum = 0;
+    }
     /**
      * Verify if the connection is full.
      *

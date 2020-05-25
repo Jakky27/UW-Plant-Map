@@ -44,7 +44,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -74,7 +74,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -104,7 +104,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -133,7 +133,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -156,7 +156,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -184,7 +184,7 @@ public class PlantServerImp implements PlantServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }

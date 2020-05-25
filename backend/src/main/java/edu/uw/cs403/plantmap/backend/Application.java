@@ -47,6 +47,8 @@ public class Application {
         post("/v1/image/:id", imgCtr::uploadImg);
 
         exception(Exception.class, (exception, request, response) -> {
+            pool.reset();
+
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             pw.println("500 - Internal Error");

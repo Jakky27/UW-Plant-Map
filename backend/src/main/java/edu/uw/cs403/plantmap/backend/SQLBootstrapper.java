@@ -47,11 +47,7 @@ public class SQLBootstrapper {
             throw new RuntimeException("Failed to bootstrap database.");
         } finally {
             if (conn != null) {
-                try {
-                    pool.returnConnection(conn);
-                } catch (Exception ignored) {
-
-                }
+                pool.returnConnectionSafe(conn);
             }
         }
     }

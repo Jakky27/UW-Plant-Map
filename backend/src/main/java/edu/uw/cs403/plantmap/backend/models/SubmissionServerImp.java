@@ -49,7 +49,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -81,7 +81,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -104,7 +104,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -139,7 +139,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -178,7 +178,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -202,7 +202,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
@@ -225,7 +225,7 @@ public class SubmissionServerImp implements SubmissionServer {
             throw new SQLException("Encountered an error when executing given sql statement.", e);
         } finally {
             if (conn != null) {
-                pool.returnConnection(conn);
+                pool.returnConnectionSafe(conn);
             }
         }
     }
