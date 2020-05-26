@@ -101,7 +101,7 @@ The `controllers` folder stores the HTTP handlers. We use the Spark framework to
 
 ## Running tests locally
 
-Tests are automatically run on our C/I when a commit is made to master, and you can see them [there](https://app.circleci.com/pipelines/github/Jakky27/UW-Plant-Map). If you would like to run all the tests locally you can use `./gradlew :backend:test :frontent:app:testDebugUnitTest`. The backend test report is in `backend/build/reports/tests/test`, and the frontend test report is in `frontend/app/build/reports/tests/testDebugUnitTest`.
+Tests are automatically run on our C/I when a commit is made to master, and you can see them [there](https://app.circleci.com/pipelines/github/Jakky27/UW-Plant-Map). If you would like to run all the tests locally you can use `./gradlew :backend:test :frontend:app:testDebugUnitTest`. The backend test report is in `backend/build/reports/tests/test`, and the frontend test report is in `frontend/app/build/reports/tests/testDebugUnitTest`.
 
 Note that for the frontend we also use manual testing to check that app use cases are met. You can find out more about our manual testing in the `docs/testing/ManualTesting.md` file.
 
