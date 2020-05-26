@@ -78,7 +78,7 @@ public class TestPlantHandler {
             Object p = ctr.getPlant(mockRequest, mockResponse);
             Object expect = new JSONObject(server.getPlantById(1));
             Mockito.verify(mockResponse).type("application/json");
-//            assertEquals(expect, p);
+            assertEquals(expect.toString(),p.toString());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -91,9 +91,7 @@ public class TestPlantHandler {
         try {
             Mockito.when(mockRequest.requestMethod()).thenReturn("GET");
             Object p = ctr.getAllPlant(mockRequest, mockResponse);
-            Object expect = new JSONObject(server.getPlantById(1));
             Mockito.verify(mockResponse).type("application/json");
-//            assertEquals(expect, p);
 
         }catch (Exception e){
             e.printStackTrace();
