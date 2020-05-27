@@ -55,6 +55,8 @@ public class SQLConnectionPool {
      *             Fail to get an available connection
      */
     public synchronized Connection getConnection() throws SQLException {
+        Debug.print("Get connection for " + Debug.getCallerFunctionTag());
+
         Connection conn = null;
 
         if (isFull()) {
@@ -66,12 +68,19 @@ public class SQLConnectionPool {
         // If there is no free connection, create a new one.
         if (conn == null) {
             conn = createNewConnectionForPool();
+            Debug.print("No free connections, created one...");
         }
 
         // For Azure Database for MySQL, if there is no action on one connection for some
         // time, the connection is lost. By this, make sure the connection is
         // active. Otherwise reconnect it.
         makeAvailable(conn);
+
+        Debug.print("Connection ID: " + conn.hashCode());
+        Debug.print("Occupied pool size: " + occupiedPool.size()
+                + " Free pool size: " + freePool.size()
+                + " connNum: " + connNum);
+
         return conn;
     }
 
@@ -86,6 +95,7 @@ public class SQLConnectionPool {
      */
     public synchronized void returnConnection(Connection conn)
             throws SQLException {
+
         if (conn == null) {
             throw new NullPointerException();
         }
@@ -94,9 +104,16 @@ public class SQLConnectionPool {
                     "The connection is returned already or it isn't for this pool");
         }
         freePool.push(conn);
+
+        Debug.print("Occupied pool size: " + occupiedPool.size()
+                + " Free pool size: " + freePool.size()
+                + " connNum: " + connNum);
     }
 
     public synchronized void returnConnectionSafe(Connection conn) {
+        Debug.print("Returning connection from " + Debug.getCallerFunctionTag());
+        Debug.print("Connection ID: " + conn.hashCode());
+
         try {
             returnConnection(conn);
         } catch (SQLException e) {
@@ -106,7 +123,7 @@ public class SQLConnectionPool {
         }
     }
 
-    public synchronized void reset()
+    private synchronized void reset()
     {
         // Empty the pool so new connections are made
         freePool.clear();
@@ -184,6 +201,8 @@ public class SQLConnectionPool {
         if (isConnectionAvailable(conn)) {
             return;
         }
+
+        Debug.print("Connection was unavailable, reconnecting it.");
 
         // If the connection is't available, reconnect it.
         occupiedPool.remove(conn);

@@ -13,6 +13,9 @@ import static spark.Spark.*;
 
 public class Application {
     public static void main(String[] args) {
+        // TODO: Add a command line flag or env. variable that enables/disables this
+        Debug.enable();
+
         SQLConnectionPool pool = createConnectionPool();
         SQLBootstrapper bootstrap = new SQLBootstrapper(pool);
 
@@ -47,8 +50,6 @@ public class Application {
         post("/v1/image/:id", imgCtr::uploadImg);
 
         exception(Exception.class, (exception, request, response) -> {
-            pool.reset();
-
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             pw.println("500 - Internal Error");
