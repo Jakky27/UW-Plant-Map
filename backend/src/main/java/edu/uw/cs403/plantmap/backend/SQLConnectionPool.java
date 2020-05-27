@@ -74,7 +74,7 @@ public class SQLConnectionPool {
         // For Azure Database for MySQL, if there is no action on one connection for some
         // time, the connection is lost. By this, make sure the connection is
         // active. Otherwise reconnect it.
-        makeAvailable(conn);
+        conn = makeAvailable(conn);
 
         Debug.print("Connection ID: " + conn.hashCode());
         Debug.print("Occupied pool size: " + occupiedPool.size()
@@ -197,9 +197,9 @@ public class SQLConnectionPool {
      * @throws SQLException
      *             Fail to get an available connection
      */
-    private void makeAvailable(Connection conn) throws SQLException {
+    private Connection makeAvailable(Connection conn) throws SQLException {
         if (isConnectionAvailable(conn)) {
-            return;
+            return conn;
         }
 
         Debug.print("Connection was unavailable, reconnecting it.");
@@ -212,6 +212,7 @@ public class SQLConnectionPool {
         conn = createNewConnection();
         occupiedPool.add(conn);
         connNum++;
+        return conn;
     }
 
     /**
