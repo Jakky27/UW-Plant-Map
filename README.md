@@ -8,7 +8,7 @@ UW Plant Map is developed for the University of Washington's CS 403 class. It wi
 
 ## Installing the app on an Android phone
 
-You can get a pre-assembled version of the app from [the GitHub releases page](https://github.com/Jakky27/UW-Plant-Map/releases/tag/v1.0-beta). This app contains a testing API key for the Google Maps SDK, so if you're getting a gray map you should obtain your own API key and build the app from scratch using the instructions below.
+You can get a pre-assembled version of the app from [the GitHub releases page](https://github.com/Jakky27/UW-Plant-Map/releases/tag/v1.0-beta2). This app contains a testing API key for the Google Maps SDK, so if you're getting a gray map you should obtain your own API key and build the app from scratch using the instructions below.
 
 Note that when sideloading an APK on your Android device for the first time it will warn you about installing applications from third-parties. Please check [here](https://www.xda-developers.com/sideload-apps-how-to/) to find instructions on how to authorize sideloading of apps on your Android device.
 
