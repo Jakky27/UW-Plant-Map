@@ -39,7 +39,7 @@ ________________
 * Modified user guidance and developer document
 
 **Jacky**
-
+* Migrating frontend code to the backend client 
 
 **Kouroche**
 * Added debugging tools to the backend to find nasty connection to database bug
