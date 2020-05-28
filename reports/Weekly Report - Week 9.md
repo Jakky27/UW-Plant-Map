@@ -7,13 +7,19 @@ Week 9
 * Handle exceptions and HTTP errors in backend
 
 
-
 ### Progress and Issues
-
+* Add more testings for both frontend and backend
+* Implementing the user case of selecting a plant from map
+* Implementing the report function
+* Adding dubugging tools in the backend
+* Fully implemented the image function (add image in a submission and get the image)
+* Fixed unknown server side bugs (which turns out to be a bug from Azure docs)
 
 
 ### Plans for Next Week
 * Finishing touches on frontend reporting use case.
+* Get more user feedbacks
+* Prepare for the final release and presentation
 
 ________________
 
@@ -29,10 +35,10 @@ ________________
 * Finished front-end client to handle network requests to back-end
 
 **Huan**
-
+* Impelemented testing for all handler functions using Mockito
+* Modified user guidance and developer document
 
 **Jacky**
-
 
 
 **Kouroche**
