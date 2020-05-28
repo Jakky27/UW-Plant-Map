@@ -36,4 +36,8 @@ ________________
 
 
 **Kouroche**
-
+* Added debugging tools to the backend to find nasty connection to database bug
+* Also fixed said bug! Apparently copying code from Microsoft Docs is a bad idea
+* Fixed some bugs in the image route handler.
+* Images are now fully implemented in the backend! Check it out!
+https://plantmap.herokuapp.com/v1/image/1
