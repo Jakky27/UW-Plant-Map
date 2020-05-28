@@ -24,8 +24,9 @@ ________________
 
 
 **Daniel**
-
-
+* Implemented use case for selecting a plant from the map to view its submission
+* Added uploding an image when posting a submission
+* Finished front-end client to handle network requests to back-end
 
 **Huan**
 
