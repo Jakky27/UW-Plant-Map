@@ -21,7 +21,7 @@ public class SubmissionServerImp implements SubmissionServer {
     private static final String STATEMENT_READIMG = "SELECT img FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_DELETE = "DELETE FROM submission WHERE post_id = ?;";
     private static final String STATEMENT_UPDATE = "UPDATE submission SET img = ? WHERE post_id = ?;";
-    private static final String STATEMENT_INCREPORT = "UPDATE submission SET reported = reported + 1 WHERE post_id = ?";
+    private static final String STATEMENT_INCREPORT = "UPDATE submission SET reported = reported + 1 WHERE post_id = ?;";
 
     @Override
     public int createSubmission(String posted_by, long post_date, int plant_id, float longitude, float latitude) throws Exception {
