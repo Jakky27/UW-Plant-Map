@@ -91,13 +91,28 @@ For the frontend our code is organized using the standard Android project file l
 - `models`: Data structures for our model
 - `clients`: Classes responsible for communication with the backend 
 
-For the backend, the code is firstly divided into a source code folder and a testing folder. 
+Backend is organized using the standard Java project file layout.
 
-In the source code folder, `Application.java` contains the entry point that starts backend server. This is where the database connection and the API route mapping is made.
-
-The `models` folder stores model classes. The major classes we have used are Plant and Submission. The folder also stores the data access objects (DAOs) for these two classes. You can make other DAOs for other database models by implementing their interface.
-
-The `controllers` folder stores the HTTP handlers. We use the Spark framework to handle the HTTP requests and responses. 
+- File `Application.java` contains the entry point that starts backend server. This is where the database connection and the API route mapping is made.
+- Directory  `models` stores model and data access objects (DAOs) classes. 
+  - `Plant` 
+    - `Plant` is a plant object with plant name, id and description. It uses *Lombok* package to deal with the data access
+    - `PlantServer` is an interface of accessing plant. It contains CRUD methods of retrieving and offering plants. You can implement this interface to connect with any database.
+    - `PlantServerImp` is our major implementation of the server.
+    -  `PlantServerTest` is a cache base mock server implementation for testing
+  - `Submission`
+    - `Submission` is a submission object with submission id, user name, location
+    - `SubmissionServer` is an interface of accessing submission table in the database.
+    - `SubmissionServerImp` is the major implementation of the server 
+    - `SubmissionServerTest` is a cache based mock server implementation for testing 
+- Directory`controllers` folder stores the HTTP handlers. We use the Spark framework to handle the HTTP requests and responses. 
+  - `ImageHandler` handles request of `/image/{id}`. We currently support POST (add an image to a submission), and GET (get an image of a submission)
+  - `SubmissionHandler`  handles request of `/submission` and `/submission/{id}`. 
+    - `/submission` supports POST (add a new submission) and GET (get all submissions)
+    - `/submission/{id}` supports GET (get a submission of the given id) and PATCH (update the information in a submission) DELETE (delete a submission)
+  - `PlantHandler` handles request of `/plant` and `/plant/{id}`. 
+    - `/plant` supports POST (add a new plant) and GET (get all plant)
+    - `/plant/{id}` supports GET (get a plant of the given id) and PATCH (update the plant in a submission) DELETE (delete a plant)
 
 ## Running tests locally
 
@@ -108,7 +123,7 @@ Note that for the frontend we also use manual testing to check that app use case
 ## Adding new unit tests
 
 This project uses JUnit for testing. For the backend, please add the new test code to `backend/src/test/java/edu/uw/cs403/plantmap/backend/<TestTarget>.java`. For the frontend, unit tests can be added to `frontend/app/src/test/java/edu/uw/cs403/plantmap/<TestTarget>.java`. Additionally, Android instrumented tests can be added to `frontend/app/src/androidTest/java/edu/uw/cs403/plantmap/<TestTarget>.java`. Make sure to add whatever package is being tested if it does not already exist there. The naming pattern for the testing class should be 'Test<Name-of-class-being-tested>.java'. Try to use existing frameworks being used in our testing suite (for example, our front end uses Mockito for mocking).
-  
+
 ## Releasing a new version
 
 To tag a commit for release, go to the Releases tab of our GitHub repo and select 'Draft a new release.' From there use `v<major>.<minor>` as the tag version and `Release <major>.<minor>` as the release title. You will also need to upload the commit's generated APK file from the frontend workflow artifacts, and all the JAR files from the backend workflow artifacts, both of which can be obtained for the current commit on out C/I. Make sure to describe all the new features and known bugs in the release description.
