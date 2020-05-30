@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import edu.uw.cs403.plantmap.R
@@ -19,6 +20,7 @@ class ViewSubmissionActivity : AppCompatActivity() {
     private lateinit var client: UWPlantMapClient
 
     private lateinit var backButton: Button
+    private lateinit var reportButton: Button
     private lateinit var plantName: TextView
     private lateinit var postedBy: TextView
     private lateinit var submissionImage: ImageView
@@ -30,22 +32,29 @@ class ViewSubmissionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_submission)
 
         backButton = findViewById(R.id.submissionBackButton)
+        reportButton = findViewById(R.id.submissionReportButton)
         plantName = findViewById(R.id.submissionPlantName)
         postedBy = findViewById(R.id.submissionPostedBy)
         submissionImage = findViewById(R.id.submissionImageView)
         plantDescription = findViewById(R.id.submissionDescription)
-
-        backButton.setOnClickListener {
-            finish()
-        }
 
         client =
             BackendClient.getInstance(RequestQueueSingleton.getInstance(this.applicationContext))
 
         val submissionId = intent.extras!!["submissionId"] as Int
 
+        backButton.setOnClickListener {
+            finish()
+        }
+
         val errorListener = Response.ErrorListener { error ->
             error.stackTrace
+        }
+
+        reportButton.setOnClickListener {
+            client.reportSubmission(submissionId, Response.Listener {
+                Toast.makeText(this, "This submission has been reported", Toast.LENGTH_SHORT).show()
+            }, errorListener)
         }
 
         val plantResponseListener = Response.Listener<Plant> { plant ->
