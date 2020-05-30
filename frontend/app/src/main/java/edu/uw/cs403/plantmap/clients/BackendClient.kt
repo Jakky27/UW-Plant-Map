@@ -171,6 +171,20 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
         requestQueue.addToRequestQueue(request)
     }
 
+    override fun reportSubmission(
+        submissionId: Int,
+        listener: Response.Listener<Int>,
+        errorListener: Response.ErrorListener
+    ) {
+        val request = StringRequest(
+            Request.Method.POST,"$API_SUBMISSION_PATH/$submissionId/report",
+            Response.Listener { response ->
+                listener.onResponse(response.toInt())
+            }, errorListener)
+
+        requestQueue.addToRequestQueue(request)
+    }
+
     override fun getImage(submissionId: Int, scaleType: ImageView.ScaleType, listener: Response.Listener<Bitmap>,
                           errorListener: Response.ErrorListener) {
         val request = ImageRequest("$API_IMAGE_PATH/$submissionId", listener, 0,

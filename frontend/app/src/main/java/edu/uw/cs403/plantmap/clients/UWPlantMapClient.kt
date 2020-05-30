@@ -83,6 +83,10 @@ interface UWPlantMapClient {
         postedBy: String, image: Bitmap, listener: Response.Listener<Int>,
         errorListener: Response.ErrorListener)
 
+    fun reportSubmission(
+        submissionId: Int, listener: Response.Listener<Int>, errorListener: Response.ErrorListener
+    )
+
     /**
      * Sends a request to get the image for a submission
      *
