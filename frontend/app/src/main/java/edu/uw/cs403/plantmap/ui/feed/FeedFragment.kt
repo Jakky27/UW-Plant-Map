@@ -74,7 +74,7 @@ class FeedFragment : Fragment() {
                         posts.add(Post(submission, plant))
 
                         if (posts.size == submissions.size) {
-                            posts.sortBy{ it.submission.post_date }
+                            posts.sortBy{ -1 * it.submission.post_date!! }
                             postsView.adapter!!.notifyDataSetChanged()
                         }
                     },
