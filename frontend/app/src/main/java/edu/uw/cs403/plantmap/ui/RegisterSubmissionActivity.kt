@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -87,6 +88,7 @@ class RegisterSubmissionActivity : AppCompatActivity() {
                         } else {
                             // Set up callback function for errors
                             val errorListener = Response.ErrorListener { error ->
+                                error.printStackTrace()
                                 val errorMsg = NETWORK_ERROR_TEXT + error.networkResponse.statusCode
                                 Toast.makeText(this, errorMsg, DURATION).show()
                                 error.stackTrace

@@ -14,7 +14,7 @@ import static spark.Spark.*;
 public class Application {
     public static void main(String[] args) {
         // TODO: Add a command line flag or env. variable that enables/disables this
-        Debug.enable();
+        // Debug.enable();
 
         SQLConnectionPool pool = createConnectionPool();
         SQLBootstrapper bootstrap = new SQLBootstrapper(pool);
