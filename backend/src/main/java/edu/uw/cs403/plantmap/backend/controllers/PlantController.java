@@ -23,6 +23,13 @@ public class PlantController {
     }
 
 
+    /**
+     * Receive POST request to add a new plant in the database
+     * @param request the http request
+     * @param response the http response
+     * @return the plant_id just added, or 0 if the request body is not valid json format
+     * @throws Exception if there are any errors
+     */
     public int addPlant(Request request, Response response) throws Exception {
         // ensure the body type is JSON
         if (request.contentType().equals("application/json")) {
@@ -37,6 +44,13 @@ public class PlantController {
         }
     }
 
+    /**
+     * Receives GET request to get a specific plant with the given id provided in the url
+     * @param request the http request
+     * @param response the http response
+     * @return a plant object in json format
+     * @throws Exception if there are any errors
+     */
     public Object getPlant(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         Plant p = server.getPlantById(pid);
@@ -45,6 +59,13 @@ public class PlantController {
         return new JSONObject(p);
     }
 
+    /**
+     * Receives GET request to get all plants in database
+     * @param request the http request
+     * @param response the http response
+     * @return a list of plant object in json array format
+     * @throws Exception if there are any errors
+     */
     public Object getAllPlant(Request request, Response response) throws Exception{
         List<Plant> list = server.getAllPlants();
         response.type("application/json");
@@ -52,12 +73,26 @@ public class PlantController {
         return new JSONArray(list);
     }
 
+    /**
+     * Receives PATCH request to update the information of a specific plant
+     * @param request the http request
+     * @param response the http response
+     * @return
+     * @throws Exception if there are any errors
+     */
     public int updatePlant(Request request, Response response) throws Exception{
         int pid = Integer.parseInt(request.params(":id"));
         JSONObject bodyJson = new JSONObject(request.body());
         return server.updatePlant(pid, bodyJson.getString(attrName), bodyJson.getString(attrDescription));
     }
 
+    /**
+     * Receives DELETE request to delete a specific plant from database
+     * @param request the http request
+     * @param response the http response
+     * @return
+     * @throws Exception if there are any errors
+     */
     public int deletePlant(Request request, Response response) throws Exception{
         int pid = Integer.parseInt(request.params(":id"));
         return server.deletePlant(pid);

@@ -31,6 +31,14 @@ public class SubmissionController {
     private static String attrLon = "longitude";
     private static String attrLat = "latitude";
 
+    /**
+     * Receives POST request to create a new submission
+     *
+     * @param request the http request
+     * @param response the http response
+     * @return the id of the newly created post, or a failing message
+     * @throws Exception if there are any errors
+     */
     public Object createPost(Request request, Response response) throws Exception{
         response.type("text/html");
         if (request.contentType().equals("application/json")) {
@@ -44,6 +52,14 @@ public class SubmissionController {
         }
     }
 
+    /**
+     * Receives GET request to get the submission of a given id in the url
+     *
+     * @param request the http request
+     * @param response the http response
+     * @return the submission object in JSON format
+     * @throws Exception if there are any errors
+     */
     public Object getPost(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         Submission s = server.getSubmission(pid);
@@ -52,6 +68,13 @@ public class SubmissionController {
         return new JSONObject(s);
     }
 
+    /**
+     * Receives GET request to get all the submissions in the database
+     * @param request the http request
+     * @param response the http response
+     * @return the list of submissions object in JSON array format
+     * @throws Exception if there are any errors
+     */
     public Object getAllPost(Request request, Response response) throws Exception {
         String threshS = request.queryParams("reported");
         int thresh = 100;
@@ -64,11 +87,27 @@ public class SubmissionController {
         return new JSONArray(list);
     }
 
+    /**
+     * Receives DELETE request to delete certain submission with the id in the url
+     *
+     * @param request the http request
+     * @param response the http response
+     * @return the submission id that has just been deleted
+     * @throws Exception if there are any errors
+     */
     public Object deletePost(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         return server.deleteSubmission(pid);
     }
 
+    /**
+     *  Receives POST request for a submission report to increase the report number
+     *
+     * @param request
+     * @param response
+     * @return the submission id of the related report
+     * @throws Exception if there are any errors
+     */
     public Object reportPost(Request request, Response response) throws Exception {
         int pid = Integer.parseInt(request.params(":id"));
         return server.reportSubmission(pid);
