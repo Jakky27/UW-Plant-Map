@@ -43,7 +43,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var client: UWPlantMapClient
 
     private lateinit var mapViewModel: MapViewModel
-    private lateinit var searchView: SearchView
     private lateinit var mapView: MapView
     private lateinit var registerFAB : FloatingActionButton
     private lateinit var UWMap: GoogleMap
@@ -58,11 +57,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val root = inflater.inflate(R.layout.fragment_map, container, false)
 
         // Get widgets
-        searchView = root.findViewById(R.id.mapSearch)
         mapView = root.findViewById(R.id.mapView)
         registerFAB = root.findViewById(R.id.registerPlantFAB)
-
-        initSearchBarCallbacks()
 
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
@@ -115,26 +111,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
-    }
-
-    private fun initSearchBarCallbacks() {
-        // Open and closing searchbar
-        searchView.setOnQueryTextFocusChangeListener { _, _ ->
-            Log.d("DEBUG", "Focus Toggled")
-        }
-        //
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
-                Log.d("DEBUG", "Query Changed")
-                Log.d("DEBUG", searchView.query.toString())
-                return false
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                Log.d("DEBUG", "Query Submitted")
-                return true
-            }
-        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
