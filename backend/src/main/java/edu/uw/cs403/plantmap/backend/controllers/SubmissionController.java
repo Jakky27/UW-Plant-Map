@@ -1,5 +1,6 @@
 package edu.uw.cs403.plantmap.backend.controllers;
 
+import edu.uw.cs403.plantmap.backend.models.Plant;
 import edu.uw.cs403.plantmap.backend.models.Submission;
 import edu.uw.cs403.plantmap.backend.models.SubmissionServer;
 import org.json.JSONArray;
@@ -8,6 +9,7 @@ import spark.Request;
 import spark.Response;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -40,16 +42,25 @@ public class SubmissionController {
      * @throws Exception if there are any errors
      */
     public Object createPost(Request request, Response response) throws Exception{
-        response.type("text/html");
-        if (request.contentType().equals("application/json")) {
-            JSONObject bodyJson = new JSONObject(request.body());
-            int res = server.createSubmission(bodyJson.getString(attrPostby), bodyJson.getLong(attrDate), bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
-            return res;
-        } else {
-            // response a http error
+        // ensure the body type is JSON
+        if (!request.contentType().equals("application/json")){
+            response.type("text/html");
             response.status(415);
             return "Post failed";
         }
+
+        // try to catch SQL exceptions
+        try {
+            JSONObject bodyJson = new JSONObject(request.body());
+            int res = server.createSubmission(bodyJson.getString(attrPostby), bodyJson.getLong(attrDate), bodyJson.getInt(attrPlantID), bodyJson.getFloat(attrLon), bodyJson.getFloat(attrLat));
+            response.type("text/plain");
+            response.status(201);
+            return res;
+        } catch (Exception e){
+            response.status(500);
+            throw new Exception("Encountered an error when handler the request.", e);
+        }
+
     }
 
     /**
@@ -61,11 +72,28 @@ public class SubmissionController {
      * @throws Exception if there are any errors
      */
     public Object getPost(Request request, Response response) throws Exception {
-        int pid = Integer.parseInt(request.params(":id"));
-        Submission s = server.getSubmission(pid);
+        // try to catch parse errors
+        try {
+            int pid = Integer.parseInt(request.params(":id"));
 
-        response.type("application/json");
-        return new JSONObject(s);
+            // This block catches SQL errors
+            try {
+                Submission s = server.getSubmission(pid);
+                JSONObject res = new JSONObject(s);
+                response.type("application/json");
+                response.status(200);
+                return res;
+            }catch (SQLException se){
+                response.status(500);
+                throw new Exception("Encountered an error when handler the request.", se);
+            }
+
+        } catch (NumberFormatException ne) {
+            response.status(400);
+            throw new Exception("Encountered an error when handler the request.", ne);
+        }
+
+
     }
 
     /**
@@ -76,15 +104,24 @@ public class SubmissionController {
      * @throws Exception if there are any errors
      */
     public Object getAllPost(Request request, Response response) throws Exception {
-        String threshS = request.queryParams("reported");
-        int thresh = 100;
-        if (threshS != null && !threshS.isEmpty()) {
-            thresh = Integer.parseInt(threshS);
-        }
-        List<Submission> list = server.getAllSubmission(thresh);
+        // Try to catches any exceptions
+        try {
+            String threshS = request.queryParams("reported");
+            int thresh = 100;
+            if (threshS != null && !threshS.isEmpty()) {
+                thresh = Integer.parseInt(threshS);
+            }
+            List<Submission> list = server.getAllSubmission(thresh);
 
-        response.type("application/json");
-        return new JSONArray(list);
+            JSONArray res = new JSONArray(list);
+            response.type("application/json");
+            response.status(200);
+            return res;
+        } catch (Exception e){
+            response.status(500);
+            throw new Exception("Encountered an error when handler the request.", e);
+        }
+
     }
 
     /**
@@ -96,8 +133,26 @@ public class SubmissionController {
      * @throws Exception if there are any errors
      */
     public Object deletePost(Request request, Response response) throws Exception {
-        int pid = Integer.parseInt(request.params(":id"));
-        return server.deleteSubmission(pid);
+        // try to catch parse errors
+        try {
+            int pid = Integer.parseInt(request.params(":id"));
+
+            // This block catches SQL errors
+            try {
+                int res = server.deleteSubmission(pid);
+                response.type("text/plain");
+                response.status(200);
+                return res;
+            }catch (SQLException se){
+                response.status(500);
+                throw new Exception("Encountered an error when handler the request.", se);
+            }
+
+        } catch (NumberFormatException ne) {
+            response.status(400);
+            throw new Exception("Encountered an error when handler the request.", ne);
+        }
+
     }
 
     /**
@@ -109,8 +164,26 @@ public class SubmissionController {
      * @throws Exception if there are any errors
      */
     public Object reportPost(Request request, Response response) throws Exception {
-        int pid = Integer.parseInt(request.params(":id"));
-        return server.reportSubmission(pid);
+        // try to catch parse errors
+        try {
+            int pid = Integer.parseInt(request.params(":id"));
+
+            // This block catches SQL errors
+            try {
+                int res = server.reportSubmission(pid);
+                response.type("text/plain");
+                response.status(200);
+                return res;
+            }catch (SQLException se){
+                response.status(500);
+                throw new Exception("Encountered an error when handler the request.", se);
+            }
+
+        } catch (NumberFormatException ne) {
+            response.status(400);
+            throw new Exception("Encountered an error when handler the request.", ne);
+        }
+
     }
 
 

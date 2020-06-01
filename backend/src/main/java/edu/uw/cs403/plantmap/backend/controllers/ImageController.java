@@ -5,6 +5,8 @@ import edu.uw.cs403.plantmap.backend.models.SubmissionServer;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 public class ImageController {
 
     private SubmissionServer server;
@@ -21,11 +23,27 @@ public class ImageController {
      * @throws Exception if there are any errors
      */
     public Object uploadImg(Request request, Response response) throws Exception {
-        // parse submission id from URL
-        int sub_id = Integer.parseInt(request.params(":id"));
-        server.updateSubmission(sub_id, request.bodyAsBytes());
-        response.type("text/plain");
-        return sub_id;
+
+        // Try to catch parse errors
+        try {
+            int sub_id = Integer.parseInt(request.params(":id"));
+
+            // This block catches SQL errors
+            try {
+                int res = server.updateSubmission(sub_id, request.bodyAsBytes());
+                response.type("text/plain");
+                response.status(201);
+                return res;
+            }catch (SQLException se){
+                response.status(500);
+                throw new Exception("Encountered an error when handler the request.", se);
+            }
+
+        } catch (NumberFormatException ne) {
+            response.status(400);
+            throw new Exception("Encountered an error when handler the request.", ne);
+        }
+
     }
 
     /**
@@ -36,9 +54,27 @@ public class ImageController {
      * @throws Exception if there are any errors
      */
     public Object getImg(Request request, Response response) throws Exception {
-        int sub_id = Integer.parseInt(request.params(":id"));
-        response.type("image/jpeg");
-        return server.getSubmissionImage(sub_id);
+
+        // Try to catch parse errors
+        try {
+            int sub_id = Integer.parseInt(request.params(":id"));
+
+            // This block catches SQL errors
+            try {
+                byte[] res = server.getSubmissionImage(sub_id);
+                response.type("image/jpeg");
+                response.status(201);
+                return res;
+            }catch (SQLException se){
+                response.status(500);
+                throw new Exception("Encountered an error when handler the request.", se);
+            }
+
+        } catch (NumberFormatException ne) {
+            response.status(400);
+            throw new Exception("Encountered an error when handler the request.", ne);
+        }
+
     }
 
 }
