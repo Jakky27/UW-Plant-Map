@@ -31,9 +31,6 @@ import edu.uw.cs403.plantmap.ui.ViewSubmissionActivity
  * a search bar, and a button to register a new plant
  */
 class MapFragment : Fragment(), OnMapReadyCallback {
-    // Bounds for map camera
-    private val UW_BOUNDS =
-        LatLngBounds(LatLng(47.647453, -122.314609), LatLng(47.662556, -122.298299))
     // Coordinates to center map camera at
     private val UW_COORDS = LatLng(47.656021, -122.307156)
     private val ZOOM = 15f
@@ -153,7 +150,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         // get map and set bounds
         UWMap = googleMap
-        UWMap.setLatLngBoundsForCameraTarget(UW_BOUNDS)
         UWMap.moveCamera(CameraUpdateFactory.newLatLngZoom(UW_COORDS, ZOOM))
 
         // disable mylocation button, and enable location on map (if we have the permission)
@@ -197,7 +193,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
             },
             Response.ErrorListener { error ->
-                // TODO: something
+                error.stackTrace
             }
         )
     }

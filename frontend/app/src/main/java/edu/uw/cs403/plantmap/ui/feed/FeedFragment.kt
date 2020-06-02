@@ -55,13 +55,20 @@ class FeedFragment : Fragment() {
         return root
     }
 
-
+    /**
+     * Called when the Fragment is visible to the user
+     */
+    override fun onStart() {
+        super.onStart()
+        updatePostsList()
+    }
 
     /**
      * Populates the live feed with the most recent posts from the app's server
      *
      */
     private fun updatePostsList() {
+        posts.clear()
         client.getSubmissions(
             Response.Listener<List<Submission>> { submissions ->
                 for (submission in submissions) {
@@ -74,7 +81,7 @@ class FeedFragment : Fragment() {
                         posts.add(Post(submission, plant))
 
                         if (posts.size == submissions.size) {
-                            posts.sortBy{ it.submission.post_date }
+                            posts.sortBy{ -1 * it.submission.post_date!! }
                             postsView.adapter!!.notifyDataSetChanged()
                         }
                     },
