@@ -47,7 +47,6 @@ class FeedFragment : Fragment() {
         client = BackendClient.getInstance(
             RequestQueueSingleton.getInstance(this.context!!.applicationContext)
         )
-        updatePostsList()
 
         postsView.layoutManager = LinearLayoutManager(this.context)
         postsView.adapter = PostAdapter(posts, this.context!!)
