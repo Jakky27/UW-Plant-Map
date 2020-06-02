@@ -36,6 +36,7 @@ class RegisterSubmissionActivity : AppCompatActivity() {
     val NETWORK_ERROR_TEXT = "Could not upload submission: "
     val FILE_SAVE_TEXT = "Could not save image file"
     val DURATION = Toast.LENGTH_SHORT
+    val SUBMITTING_TEXT = "Uploading plant submission..."
 
     private lateinit var client: UWPlantMapClient
 
@@ -102,6 +103,7 @@ class RegisterSubmissionActivity : AppCompatActivity() {
 
                             // Set up callback function for a successful submission post
                             val submissionResponseListener = Response.Listener<Int> { _ ->
+                                finish()
                             }
 
                             // Set up a callback function for a successful plant post
@@ -112,10 +114,8 @@ class RegisterSubmissionActivity : AppCompatActivity() {
                                     errorListener)
                             }
 
+                            Toast.makeText(this, SUBMITTING_TEXT, DURATION).show()
                             client.postPlant(name, description, plantResponseListener, errorListener)
-
-                            // Return back to home
-                            finish()
                         }
                     }
             }
