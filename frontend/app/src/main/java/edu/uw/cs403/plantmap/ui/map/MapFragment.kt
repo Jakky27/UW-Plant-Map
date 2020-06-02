@@ -47,6 +47,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var registerFAB : FloatingActionButton
     private lateinit var UWMap: GoogleMap
 
+    /**
+     * Initializes view. Sets layout, initializes widgets, and sets listeners
+     *
+     * @param inflater LayoutInflater that can be used to inflate a view in this fragment
+     * @param container The parent view for this fragment
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     * saved state as given here.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,21 +83,35 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return root
     }
 
+    /**
+     * Called when this fragment should save its state
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running
+     */
     override fun onResume() {
         super.onResume()
         mapView.onResume()
     }
 
+    /**
+     * Called when the Fragment is no longer resumed.
+     */
     override fun onPause() {
         super.onPause()
         mapView.onPause()
     }
 
+    /**
+     * Called when the Fragment is visible to the user
+     */
     override fun onStart() {
         super.onStart()
         mapView.onStart()
@@ -98,21 +120,36 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Called when the Fragment is no longer started
+     */
     override fun onStop() {
         super.onStop()
         mapView.onStop()
     }
 
+    /**
+     * Called when the fragment is no longer in use
+     */
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
     }
 
+    /**
+     * This is called when the overall system is running low on memory, and actively running
+     * processes should trim their memory usage
+     */
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
 
+    /**
+     * Callback method for when the GoogleMap is ready to be used
+     *
+     * @param googleMap: A non-null instance of a GoogleMap associated with the MapView
+     */
     override fun onMapReady(googleMap: GoogleMap) {
         // get map and set bounds
         UWMap = googleMap
@@ -128,7 +165,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         // setup listener
         UWMap.setOnMarkerClickListener { marker ->
             if (!markers.containsKey(marker)) {
-                //TODO: handle
                 false
             } else {
                 val intent = Intent(context!!, ViewSubmissionActivity::class.java)

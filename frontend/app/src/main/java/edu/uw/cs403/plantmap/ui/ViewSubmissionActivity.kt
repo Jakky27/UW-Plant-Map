@@ -16,6 +16,9 @@ import edu.uw.cs403.plantmap.models.Plant
 import edu.uw.cs403.plantmap.models.Submission
 import java.text.DateFormat
 
+/**
+ * Activity for viewing a submission
+ */
 class ViewSubmissionActivity : AppCompatActivity() {
     private lateinit var client: UWPlantMapClient
 
@@ -27,6 +30,9 @@ class ViewSubmissionActivity : AppCompatActivity() {
     private lateinit var plantDescription: TextView
 
 
+    /**
+     * Initializes this activity. Sets layout, initializes widgets, and sets listeners
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_submission)

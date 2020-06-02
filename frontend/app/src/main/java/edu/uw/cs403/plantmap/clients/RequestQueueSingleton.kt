@@ -23,6 +23,12 @@ class RequestQueueSingleton constructor(context: Context) {
     private val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }
+
+    /**
+     * Adds the supplied request to the queue of requests to be executed
+     *
+     * @param req: Request to be added to the queue
+     */
     fun <T> addToRequestQueue(req: Request<T>) {
         requestQueue.add(req)
     }

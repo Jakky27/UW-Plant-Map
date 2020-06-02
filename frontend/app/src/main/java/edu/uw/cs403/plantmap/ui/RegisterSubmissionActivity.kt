@@ -50,6 +50,12 @@ class RegisterSubmissionActivity : AppCompatActivity() {
     private lateinit var currentPhotoPath: String
     private lateinit var image: Bitmap
 
+    /**
+     * Initializes this activity. Sets layout, initializes widgets, and sets listeners
+     *
+     * @param savedInstanceState: If the activity is being re-initialized after previously being
+     * shut down then this Bundle contains the data it most recently supplied in
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -153,7 +159,12 @@ class RegisterSubmissionActivity : AppCompatActivity() {
     }
 
     /**
-     * Callback method for when a picture is taken
+     * Callback method for when a picture is taken. Stores image in a temporary file if activity
+     * completed successfully. Else, does nothing
+     *
+     * @param requestCode: request code indicating the request that this result is from
+     * @param resultCode: result code indicating the status of the result
+     * @param data: Intent storing data to be returned (stored as an extra)
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -162,6 +173,11 @@ class RegisterSubmissionActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Creates and returns a temporary file to store an image in (jpg)
+     *
+     * @return a File object representing the newly created file
+     */
     private fun createImageFile(): File {
         // Create an image file name
         val storageDir: File = getExternalFilesDir(Environment.DIRECTORY_PICTURES)!!
@@ -176,7 +192,7 @@ class RegisterSubmissionActivity : AppCompatActivity() {
     }
 
     /**
-     * @return true iff location is enabled
+     * @return true iff location permissions are enabled
      */
     private fun locationEnabled() =
         (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
