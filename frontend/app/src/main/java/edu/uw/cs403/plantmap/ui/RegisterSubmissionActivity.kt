@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.android.volley.Response
@@ -58,6 +59,9 @@ class RegisterSubmissionActivity : AppCompatActivity() {
      * shut down then this Bundle contains the data it most recently supplied in
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        val permissions = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        ActivityCompat.requestPermissions(this, permissions,0)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
