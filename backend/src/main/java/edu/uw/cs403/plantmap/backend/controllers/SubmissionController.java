@@ -107,7 +107,7 @@ public class SubmissionController {
         // Try to catches any exceptions
         try {
             String threshS = request.queryParams("reported");
-            int thresh = 100;
+            int thresh = 5;
             if (threshS != null && !threshS.isEmpty()) {
                 thresh = Integer.parseInt(threshS);
             }
