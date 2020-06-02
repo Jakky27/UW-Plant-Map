@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Location
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.graphics.scale
 import com.android.volley.Response
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -23,6 +25,7 @@ import edu.uw.cs403.plantmap.R
 import edu.uw.cs403.plantmap.clients.BackendClient
 import edu.uw.cs403.plantmap.clients.RequestQueueSingleton
 import edu.uw.cs403.plantmap.clients.UWPlantMapClient
+import edu.uw.cs403.plantmap.ext.rotate
 import java.io.File
 import java.io.IOException
 
@@ -162,6 +165,46 @@ class RegisterSubmissionActivity : AppCompatActivity() {
         }
     }
 
+    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+        // Raw height and width of image
+        val (height: Int, width: Int) = options.run { outHeight to outWidth }
+        var inSampleSize = 1
+
+        if (height > reqHeight || width > reqWidth) {
+
+            val halfHeight: Int = height / 2
+            val halfWidth: Int = width / 2
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while (halfHeight / inSampleSize >= reqHeight && halfWidth / inSampleSize >= reqWidth) {
+                inSampleSize *= 2
+            }
+        }
+
+        return inSampleSize
+    }
+
+    private fun decodeSampledBitmapFromPath(
+        path: String,
+        reqWidth: Int,
+        reqHeight: Int
+    ): Bitmap {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        return BitmapFactory.Options().run {
+            inJustDecodeBounds = true
+            BitmapFactory.decodeFile(path, this)
+
+            // Calculate inSampleSize
+            inSampleSize = calculateInSampleSize(this, reqWidth, reqHeight)
+
+            // Decode bitmap with inSampleSize set
+            inJustDecodeBounds = false
+
+            BitmapFactory.decodeFile(path, this)
+        }
+    }
+
     /**
      * Callback method for when a picture is taken. Stores image in a temporary file if activity
      * completed successfully. Else, does nothing
@@ -172,7 +215,28 @@ class RegisterSubmissionActivity : AppCompatActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            image = BitmapFactory.decodeFile(currentPhotoPath)
+
+            image = decodeSampledBitmapFromPath(currentPhotoPath, 600, 600)
+
+            val rotation = ExifInterface(currentPhotoPath).getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED)
+
+            when (rotation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> {
+                    image = image.rotate(90f)
+                }
+
+                ExifInterface.ORIENTATION_ROTATE_180 -> {
+                    image = image.rotate(180f)
+                }
+
+                ExifInterface.ORIENTATION_ROTATE_270-> {
+                    image = image.rotate(270f)
+                }
+
+                else -> {}
+            }
+
             plantImageView.setImageBitmap(image)
         }
     }

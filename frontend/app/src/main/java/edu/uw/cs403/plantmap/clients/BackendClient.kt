@@ -146,7 +146,7 @@ class BackendClient constructor(private var requestQueue: RequestQueueSingleton)
 
                         override fun getBody(): ByteArray {
                             val stream = ByteArrayOutputStream()
-                            image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                            image.compress(Bitmap.CompressFormat.JPEG, 75, stream)
                             return stream.toByteArray()
                         }
                     }
