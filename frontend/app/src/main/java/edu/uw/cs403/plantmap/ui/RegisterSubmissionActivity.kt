@@ -103,8 +103,12 @@ class RegisterSubmissionActivity : AppCompatActivity() {
                             // Set up callback function for errors
                             val errorListener = Response.ErrorListener { error ->
                                 error.printStackTrace()
-                                val errorMsg = NETWORK_ERROR_TEXT + error.networkResponse.statusCode
-                                Toast.makeText(this, errorMsg, DURATION).show()
+
+                                if (error.networkResponse != null) {
+                                    val errorMsg = NETWORK_ERROR_TEXT + error.networkResponse.statusCode
+                                    Toast.makeText(this, errorMsg, DURATION).show()
+                                }
+
                                 error.stackTrace
                             }
 
