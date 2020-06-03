@@ -68,6 +68,9 @@ class FeedFragment : Fragment() {
      */
     private fun updatePostsList() {
         posts.clear()
+        if (this::postsView.isInitialized) {
+            postsView.adapter?.notifyDataSetChanged()
+        }
         client.getSubmissions(
             Response.Listener<List<Submission>> { submissions ->
                 for (submission in submissions) {
